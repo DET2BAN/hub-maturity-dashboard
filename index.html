@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSH Hub Maturity Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+:root{
+  --navy:#0d1f3c;--red:#c8102e;--accent:#d97706;--green:#16a34a;--danger:#dc2626;
+  --l1c:#dc2626;--l1b:#fef2f2;--l2c:#d97706;--l2b:#fffbeb;--l3c:#16a34a;--l3b:#f0fdf4;--l4c:#2563eb;--l4b:#eff6ff;
+  --bdr:#e2e8f0;--bg:#f5f7fa;--text:#0d1f3c;--mid:#4a5568;--light:#718096;--white:#fff;--off:#f7fafc;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text)}
+
+/* TOP HEADER */
+.header{background:var(--navy);padding:16px 28px;position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 2px 12px rgba(0,0,0,.18)}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-logo{width:40px;height:40px;background:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;color:#fff;flex-shrink:0}
+.brand-title{font-size:17px;font-weight:700;color:#fff;line-height:1.2}
+.brand-sub{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+
+.breadcrumb{display:flex;align-items:center;gap:6px;flex:1;padding:0 20px}
+.bc-sep{color:rgba(255,255,255,.2);font-size:16px}
+.bc-item{font-size:13px;color:rgba(255,255,255,.55);cursor:pointer;padding:4px 8px;border-radius:5px;transition:.2s;font-weight:500}
+.bc-item:hover{background:rgba(255,255,255,.08);color:#fff}
+.bc-item.active{color:#fff;font-weight:700;cursor:default}
+
+.view-toggle{display:flex;gap:4px;background:rgba(255,255,255,.08);border-radius:7px;padding:4px}
+.v-btn{padding:6px 12px;background:transparent;color:rgba(255,255,255,.5);border:none;cursor:pointer;font-size:12px;font-weight:600;border-radius:5px;transition:.2s}
+.v-btn.active{background:rgba(255,255,255,.18);color:#fff}
+
+/* MAIN */
+.main{max-width:1400px;margin:0 auto;padding:24px}
+
+/* SECTION */
+.section{margin-bottom:32px}
+.section-title{font-size:17px;font-weight:700;margin-bottom:5px}
+.section-sub{font-size:13px;color:var(--light);margin-bottom:18px}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:28px}
+.kpi{background:var(--white);border:1px solid var(--bdr);border-radius:12px;padding:20px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.kpi-label{font-size:11px;font-weight:700;color:var(--light);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.kpi-val{font-size:32px;font-weight:700;line-height:1;margin-bottom:6px}
+.kpi-sub{font-size:13px;color:var(--mid)}
+.kpi-badge{display:inline-block;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;margin-top:8px}
+
+/* LEVEL BADGES */
+.lv-l1{color:var(--l1c);background:var(--l1b)}
+.lv-l2{color:var(--l2c);background:var(--l2b)}
+.lv-l3{color:var(--l3c);background:var(--l3b)}
+.lv-l4{color:var(--l4c);background:var(--l4b)}
+
+/* CHART WRAPPER */
+.chart-wrap{background:var(--white);border:1px solid var(--bdr);border-radius:12px;padding:20px;margin-bottom:28px;position:relative}
+.chart-title{font-size:13px;font-weight:700;color:var(--mid);margin-bottom:14px}
+.chart-inner{position:relative;height:260px}
+
+/* CHARTS 2COL */
+.charts-2col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
+
+/* THEME GRID */
+.theme-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:28px}
+.tc{background:var(--white);border:1px solid var(--bdr);border-radius:12px;padding:18px}
+.tc-icon{font-size:22px;margin-bottom:10px}
+.tc-name{font-size:12px;font-weight:700;color:var(--mid);min-height:32px;margin-bottom:10px}
+.tc-score{font-size:26px;font-weight:700;margin-bottom:8px}
+.tc-bar{height:5px;background:#e5e7eb;border-radius:3px;margin-bottom:8px;overflow:hidden}
+.tc-bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.tc-lv{font-size:11px;font-weight:700;padding:3px 8px;border-radius:5px;display:inline-block}
+
+/* CARDS / GRID VIEW */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.card{background:var(--white);border:1px solid var(--bdr);border-radius:12px;padding:20px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.card.drill::after{content:"›";position:absolute;right:16px;top:16px;font-size:20px;color:var(--light);font-weight:700}
+.card:hover{box-shadow:0 8px 24px rgba(0,0,0,.1);transform:translateY(-3px)}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.card-name{font-size:14px;font-weight:700}
+.card-meta{font-size:11px;color:var(--light);margin-top:3px}
+.card-score-block{text-align:center}
+.cscore{font-size:28px;font-weight:700;line-height:1}
+.clv{font-size:10px;font-weight:700;padding:3px 7px;border-radius:4px;display:block;margin-top:4px;text-align:center}
+.card-divider{height:1px;background:var(--bdr);margin-bottom:12px}
+.card-list{display:flex;flex-direction:column;gap:7px}
+.card-li{font-size:12px;color:var(--mid);padding:5px 0;border-bottom:1px dashed var(--bdr)}
+.card-li:last-child{border-bottom:none}
+
+/* TABLE VIEW */
+.tbl-wrap{background:var(--white);border:1px solid var(--bdr);border-radius:12px;overflow:hidden}
+.tbl-wrap table{width:100%;border-collapse:collapse}
+.tbl-wrap th{background:var(--off);padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--bdr)}
+.tbl-wrap td{padding:12px 16px;border-bottom:1px solid var(--bdr);font-size:13px}
+.tbl-wrap tr:last-child td{border-bottom:none}
+.tbl-wrap tr.clicky{cursor:pointer;transition:.15s}
+.tbl-wrap tr.clicky:hover{background:var(--off)}
+.lv-badge{display:inline-block;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700}
+.pbar{display:flex;align-items:center;gap:8px}
+.ptrack{flex:1;height:6px;background:var(--bdr);border-radius:3px;overflow:hidden}
+.pfill{height:100%;border-radius:3px;background:var(--accent)}
+
+/* RADAR / ATTRIBUTE LIST */
+.attr-list{display:flex;flex-direction:column;gap:8px}
+.attr-item{background:var(--white);border:1px solid var(--bdr);border-radius:8px;padding:12px 16px;display:flex;align-items:center;gap:14px}
+.attr-item.crit{border:2px solid rgba(220,38,38,.3);background:#fff5f5}
+.attr-name{font-size:13px;font-weight:600;flex:1}
+.attr-name.cn{color:var(--l1c);font-weight:700}
+.attr-bar{flex:2;position:relative}
+.attr-track{height:10px;background:#e5e7eb;border-radius:5px;overflow:hidden;position:relative}
+.attr-track.crit-t{background:#fee2e2}
+.attr-fill{height:100%;border-radius:5px;transition:width .6s}
+.attr-mark{position:absolute;left:62.5%;top:-2px;bottom:-2px;width:2px;background:rgba(22,163,74,.5)}
+.attr-val{font-size:15px;font-weight:700;min-width:40px;text-align:right}
+.attr-lv{min-width:58px}
+
+/* DETAIL VIEW */
+.detail-hdr{background:var(--white);border:1px solid var(--bdr);border-radius:12px;padding:24px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-start;gap:24px}
+.dhd-info h2{font-size:22px;font-weight:700;margin-bottom:4px}
+.dhd-cluster{font-size:13px;color:var(--mid);margin-bottom:16px}
+.dhd-meta{display:flex;gap:24px;flex-wrap:wrap}
+.meta-item{display:flex;flex-direction:column}
+.meta-lbl{font-size:10px;font-weight:700;color:var(--light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.meta-val{font-size:13px;font-weight:600}
+.dhd-score{text-align:center;background:var(--off);border-radius:12px;padding:24px 32px;flex-shrink:0}
+.dhd-num{font-size:52px;font-weight:700;line-height:1;margin-bottom:8px}
+.dhd-level-label{font-size:13px;font-weight:700;padding:5px 12px;border-radius:6px;display:inline-block}
+
+/* ACTION PLAN */
+.action-card{background:var(--l3b);border:1px solid rgba(22,163,74,.2);border-radius:12px;padding:20px}
+.action-card h3{color:var(--l3c);font-size:14px;margin-bottom:14px}
+.action-list{display:flex;flex-direction:column;gap:6px;margin:0;padding-left:0;list-style:none}
+.action-list li{font-size:13px;color:var(--mid);line-height:1.5;display:flex;gap:8px;padding:6px 0;border-bottom:1px solid rgba(22,163,74,.08)}
+.action-list li:last-child{border-bottom:none}
+.action-list li::before{content:"✦";color:var(--l3c);font-size:10px;margin-top:3px;flex-shrink:0}
+
+/* INSIGHT BOX */
+.insight-box{background:rgba(200,16,46,.04);border:1px solid rgba(200,16,46,.15);border-radius:10px;padding:14px 16px;margin-top:14px}
+.insight-box p{font-size:13px;color:var(--mid);line-height:1.6}
+.insight-box strong{color:var(--text)}
+
+/* GRID INSIGHT */
+.insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.ins-card{background:var(--white);border:1px solid var(--bdr);border-radius:12px;padding:18px}
+.ins-card.crit{border-color:rgba(220,38,38,.25);background:#fff9f9}
+.ins-card h3{font-size:13px;font-weight:700;margin-bottom:10px}
+.ins-card h3.cr{color:var(--l1c)}
+.ins-card ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.ins-card ul li{font-size:12px;color:var(--mid);display:flex;gap:7px;line-height:1.45}
+.ins-card ul li::before{content:"→";color:var(--l2c);font-size:11px;flex-shrink:0;margin-top:1px}
+
+/* BACK BTN */
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--white);color:var(--mid);border:1px solid var(--bdr);border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;margin-bottom:20px}
+.back-btn:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* ANIM */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.content-area{animation:fadeUp .3s ease-out}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .charts-2col{grid-template-columns:1fr}
+  .insight-grid{grid-template-columns:1fr}
+  .detail-hdr{flex-direction:column}
+  .header{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="brand">
+    <div class="brand-logo">BSH</div>
+    <div><div class="brand-title">Hub Maturity Dashboard</div><div class="brand-sub">Interactive Assessment · 2026</div></div>
+  </div>
+  <div class="breadcrumb" id="breadcrumb">
+    <span class="bc-item active" onclick="nav_hub()">Hub</span>
+  </div>
+  <div class="view-toggle" id="viewToggle">
+    <button class="v-btn active" onclick="setView('cards')">Grid</button>
+    <button class="v-btn" onclick="setView('table')">Table</button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="content-area" id="contentArea"></div>
+</main>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────
+const DATA = {
+  hub: {
+    score: 1.88,
+    level: "L2",
+    label: "Capability Hub",
+    teamsCount: 20,
+    clustersCount: 7,
+    parametersCount: 9,
+    insight: "Most teams operate at L1–L2. The overall avg of ~1.88 indicates solid foundational capabilities moving beyond simple task execution. Key barriers to L3 are AI Savviness and Cost Stewardship.",
+    themes: [
+      { name:"Leadership & Talent Flywheel", icon:"🏆", score:2.18, level:"L2" },
+      { name:"Capability Development", icon:"🚀", score:1.57, level:"L2" },
+      { name:"Organizational Effectiveness", icon:"⚙️", score:1.83, level:"L2" },
+      { name:"Strategic Value Creation", icon:"💎", score:1.65, level:"L2" }
+    ],
+    attributes: [
+      { name:"Leadership Pipeline & Succession", score:1.96, level:"L2", subLabel:"Early Pipeline" },
+      { name:"Talent Competitiveness Index", score:2.37, level:"L2", subLabel:"Market-Aligned" },
+      { name:"JRA Intensity & Future Digital", score:2.19, level:"L2", subLabel:"Specialized Mix" },
+      { name:"AI Savviness & AI Leadership", score:1.15, level:"L1", subLabel:"AI Curious", critical:true },
+      { name:"Scalable Innovation", score:1.74, level:"L2", subLabel:"Structured Programs" },
+      { name:"Technical & Functional Depth", score:1.92, level:"L2", subLabel:"Specialized Skills" },
+      { name:"End-to-End Global Ownership", score:1.81, level:"L2", subLabel:"Module Ownership" },
+      { name:"Enterprise Value Creation", score:1.89, level:"L2", subLabel:"Productivity Gain" },
+      { name:"Cost Stewardship", score:1.37, level:"L1", subLabel:"Budget Tracker", critical:true }
+    ]
+  },
+  clusters: [
+    {
+      id:"appliance", name:"Appliance Cluster", color:"#0f172a", colorHex:"15,23,42",
+      score:1.73, level:"L2", label:"Capability Hub",
+      teams:["Connectivity Platform","Extended Services","PLM (1)","Home Appliances Services"],
+      insight:"AI Savviness & Cost Stewardship consistently low. Leadership & Talent shows strength, particularly Talent Competitiveness.",
+      themes:[
+        { name:"Leadership & Talent Flywheel", score:2.05 },
+        { name:"Capability Development", score:1.58 },
+        { name:"Organizational Effectiveness", score:1.75 },
+        { name:"Strategic Value Creation", score:1.5 }
+      ],
+      attributes:[
+        { name:"Leadership Pipeline & Succession", score:1.75, level:"L2", subLabel:"Early Pipeline" },
+        { name:"Talent Competitiveness Index", score:2.75, level:"L3", subLabel:"Talent Destination" },
+        { name:"JRA Intensity & Future Digital", score:1.5, level:"L2", subLabel:"Specialized Mix" },
+        { name:"AI Savviness & AI Leadership", score:1.25, level:"L1", subLabel:"AI Curious", critical:true },
+        { name:"Scalable Innovation", score:1.75, level:"L2", subLabel:"Structured Programs" },
+        { name:"Technical & Functional Depth", score:1.75, level:"L2", subLabel:"Specialized Skills" },
+        { name:"End-to-End Global Ownership", score:1.75, level:"L2", subLabel:"Module Ownership" },
+        { name:"Enterprise Value Creation", score:1.75, level:"L2", subLabel:"Productivity Gain" },
+        { name:"Cost Stewardship", score:1.25, level:"L1", subLabel:"Budget Tracker", critical:true }
+      ],
+      actionItems:[
+        "Enroll key members in 'AI for Product Managers' courses & internal BSH AI Trainings",
+        "Establish AI Councils / Working Groups with clear business problem mandates",
+        "Introduce AI Project Intake Forms with outcome definitions",
+        "Hold regular AI Showcases and appoint AI Champions",
+        "Provide 'Finance for Non-Financial Managers' training for leads",
+        "Mandate TCO/ROI template for all new initiatives",
+        "Shift project reviews: ask 'Total Cost?' and 'Expected ROI?' as standard questions"
+      ]
+    },
+    {
+      id:"consumer", name:"Consumer Cluster", color:"#8b5cf6", colorHex:"139,92,246",
+      score:1.49, level:"L1", label:"Execution Hub",
+      teams:["B2C Marketing & Analytics","D2C","RSC","Service Management"],
+      insight:"Consumer cluster is at L1, indicating mostly reactive task execution. All themes require elevation, with Strategic Value Creation being the most critical gap.",
+      themes:[
+        { name:"Leadership & Talent Flywheel", score:1.95 },
+        { name:"Capability Development", score:1.42 },
+        { name:"Organizational Effectiveness", score:1.58 },
+        { name:"Strategic Value Creation", score:1.01 }
+      ],
+      attributes:[
+        { name:"Leadership Pipeline & Succession", score:1.80, level:"L2", subLabel:"Early Pipeline" },
+        { name:"Talent Competitiveness Index", score:2.10, level:"L2", subLabel:"Market-Aligned" },
+        { name:"JRA Intensity & Future Digital", score:1.95, level:"L2", subLabel:"Specialized Mix" },
+        { name:"AI Savviness & AI Leadership", score:0.95, level:"L1", subLabel:"AI Curious", critical:true },
+        { name:"Scalable Innovation", score:1.50, level:"L2", subLabel:"Ad-Hoc Programs" },
+        { name:"Technical & Functional Depth", score:1.75, level:"L2", subLabel:"Specialized Skills" },
+        { name:"End-to-End Global Ownership", score:1.45, level:"L1", subLabel:"Task Executor" },
+        { name:"Enterprise Value Creation", score:1.60, level:"L2", subLabel:"Productivity Gain" },
+        { name:"Cost Stewardship", score:1.10, level:"L1", subLabel:"Budget Tracker", critical:true }
+      ],
+      actionItems:[
+        "Establish foundational AI literacy program for all Consumer cluster members",
+        "Implement structured 'Why Sessions' before each project to build ownership mindset",
+        "Create Component Ownership proposals with HQ to gain module autonomy",
+        "Introduce Solution Proposals process — teams recommend, not just execute",
+        "Mandate value framing in all project kick-offs and reviews",
+        "Conduct quarterly Innovation Showcases to build momentum"
+      ]
+    },
+    {
+      id:"dataai", name:"Data & AI Cluster", color:"#0ea5e9", colorHex:"14,165,233",
+      score:1.90, level:"L2", label:"Capability Hub",
+      teams:["Master Data","AI & Data Capability Foundation"],
+      insight:"Data & AI Cluster leads with highest average in Capability Development. AI Savviness still requires structured process investment to reach L3.",
+      themes:[
+        { name:"Leadership & Talent Flywheel", score:2.20 },
+        { name:"Capability Development", score:1.80 },
+        { name:"Organizational Effectiveness", score:1.95 },
+        { name:"Strategic Value Creation", score:1.65 }
+      ],
+      attributes:[
+        { name:"Leadership Pipeline & Succession", score:2.05, level:"L2", subLabel:"Early Pipeline" },
+        { name:"Talent Competitiveness Index", score:2.50, level:"L3", subLabel:"Talent Destination" },
+        { name:"JRA Intensity & Future Digital", score:2.30, level:"L2", subLabel:"Specialized Mix" },
+        { name:"AI Savviness & AI Leadership", score:1.50, level:"L1", subLabel:"AI Emerging" },
+        { name:"Scalable Innovation", score:1.85, level:"L2", subLabel:"Structured Programs" },
+        { name:"Technical & Functional Depth", score:2.05, level:"L2", subLabel:"Specialized Skills" },
+        { name:"End-to-End Global Ownership", score:1.90, level:"L2", subLabel:"Module Ownership" },
+        { name:"Enterprise Value Creation", score:2.00, level:"L2", subLabel:"Productivity Gain" },
+        { name:"Cost Stewardship", score:1.50, level:"L2", subLabel:"Cost-Aware" }
+      ],
+      actionItems:[
+        "Scale existing AI projects into formal PoC programs with business KPIs",
+        "Implement AI Ideation Funnels to systematize innovation pipeline",
+        "Expand Component Ownership to full module roadmap authority",
+        "Introduce Business Value Hypothesis in all project charters",
+        "Build quarterly Value Realization Reviews with business stakeholders"
+      ]
+    },
+    {
+      id:"dps", name:"DPS Cluster", color:"#0891b2", colorHex:"8,145,178",
+      score:1.85, level:"L2", label:"Capability Hub",
+      teams:["XAAS","REM","Cross / User","Platform Services"],
+      insight:"DPS is at solid L2 with consistent capability across platforms. Main improvement lever is scaling AI and improving Cost Stewardship.",
+      themes:[
+        { name:"Leadership & Talent Flywheel", score:2.10 },
+        { name:"Capability Development", score:1.65 },
+        { name:"Organizational Effectiveness", score:1.90 },
+        { name:"Strategic Value Creation", score:1.75 }
+      ],
+      attributes:[
+        { name:"Leadership Pipeline & Succession", score:2.00, level:"L2", subLabel:"Early Pipeline" },
+        { name:"Talent Competitiveness Index", score:2.40, level:"L2", subLabel:"Market-Aligned" },
+        { name:"JRA Intensity & Future Digital", score:2.10, level:"L2", subLabel:"Specialized Mix" },
+        { name:"AI Savviness & AI Leadership", score:1.20, level:"L1", subLabel:"AI Curious", critical:true },
+        { name:"Scalable Innovation", score:1.80, level:"L2", subLabel:"Structured Programs" },
+        { name:"Technical & Functional Depth", score:2.00, level:"L2", subLabel:"Specialized Skills" },
+        { name:"End-to-End Global Ownership", score:1.95, level:"L2", subLabel:"Module Ownership" },
+        { name:"Enterprise Value Creation", score:2.05, level:"L2", subLabel:"Productivity Gain" },
+        { name:"Cost Stewardship", score:1.40, level:"L1", subLabel:"Budget Tracker", critical:true }
+      ],
+      actionItems:[
+        "Appoint AI Champions across XAAS, REM, and Cross teams",
+        "Introduce AI Project Intake Form process hub-wide",
+        "Mandate TCO/ROI template for new platform initiatives",
+        "Hold quarterly platform Innovation Showcases",
+        "Build Business Value Hypothesis sections in all project charters"
+      ]
+    },
+    {
+      id:"enterprise", name:"Enterprise Cluster", color:"#059669", colorHex:"5,150,105",
+      score:2.10, level:"L2", label:"Capability Hub (High)",
+      teams:["GLO","Procurement","Finance","B2B Presales & Sales","Global Logistics"],
+      insight:"Enterprise Cluster leads the Hub with 2.10. Strong Strategic Value Creation and Organizational Effectiveness. AI Savviness remains the primary barrier to L3.",
+      themes:[
+        { name:"Leadership & Talent Flywheel", score:2.35 },
+        { name:"Capability Development", score:1.75 },
+        { name:"Organizational Effectiveness", score:2.20 },
+        { name:"Strategic Value Creation", score:2.10 }
+      ],
+      attributes:[
+        { name:"Leadership Pipeline & Succession", score:2.20, level:"L2", subLabel:"Early Pipeline" },
+        { name:"Talent Competitiveness Index", score:2.50, level:"L3", subLabel:"Talent Destination" },
+        { name:"JRA Intensity & Future Digital", score:2.35, level:"L2", subLabel:"Specialized Mix" },
+        { name:"AI Savviness & AI Leadership", score:1.25, level:"L1", subLabel:"AI Curious", critical:true },
+        { name:"Scalable Innovation", score:1.90, level:"L2", subLabel:"Structured Programs" },
+        { name:"Technical & Functional Depth", score:2.05, level:"L2", subLabel:"Specialized Skills" },
+        { name:"End-to-End Global Ownership", score:2.15, level:"L2", subLabel:"Solution Ownership" },
+        { name:"Enterprise Value Creation", score:2.25, level:"L2", subLabel:"Value Proof" },
+        { name:"Cost Stewardship", score:1.95, level:"L2", subLabel:"Cost-Aware" }
+      ],
+      actionItems:[
+        "Fast-track AI Champions program — Enterprise cluster is most ready for L3 AI leap",
+        "Create formal AI Strategy for Enterprise domain within next 90 days",
+        "Build AI-driven business case tools for Procurement and Finance",
+        "Formalize existing Value Creation metrics into shared scorecard"
+      ]
+    },
+    {
+      id:"industry", name:"Industry Cluster", color:"#d97706", colorHex:"217,119,6",
+      score:2.00, level:"L2", label:"Capability Hub",
+      teams:["Digital Factory","Factory Logistics","Industrial Operations","Industry Innovation"],
+      insight:"Industry Cluster shows strong technical depth and innovation capability. AI and financial discipline investment will unlock L3 for this cluster.",
+      themes:[
+        { name:"Leadership & Talent Flywheel", score:2.25 },
+        { name:"Capability Development", score:1.95 },
+        { name:"Organizational Effectiveness", score:1.90 },
+        { name:"Strategic Value Creation", score:1.90 }
+      ],
+      attributes:[
+        { name:"Leadership Pipeline & Succession", score:2.10, level:"L2", subLabel:"Early Pipeline" },
+        { name:"Talent Competitiveness Index", score:2.40, level:"L2", subLabel:"Market-Aligned" },
+        { name:"JRA Intensity & Future Digital", score:2.25, level:"L2", subLabel:"Specialized Mix" },
+        { name:"AI Savviness & AI Leadership", score:1.30, level:"L1", subLabel:"AI Curious", critical:true },
+        { name:"Scalable Innovation", score:2.10, level:"L2", subLabel:"Structured Programs" },
+        { name:"Technical & Functional Depth", score:2.20, level:"L2", subLabel:"Architecture Lead" },
+        { name:"End-to-End Global Ownership", score:1.95, level:"L2", subLabel:"Module Ownership" },
+        { name:"Enterprise Value Creation", score:2.00, level:"L2", subLabel:"Productivity Gain" },
+        { name:"Cost Stewardship", score:1.50, level:"L2", subLabel:"Cost-Aware" }
+      ],
+      actionItems:[
+        "Leverage strong Technical Depth to lead AI-driven process optimization pilots",
+        "Scale Scalable Innovation best practices to other clusters",
+        "Implement AI Cost-Benefit framework for factory automation initiatives",
+        "Formalize 'Innovation Time' in digital factory sprints"
+      ]
+    },
+    {
+      id:"ds", name:"DS (Digital Security) Cluster", color:"#b45309", colorHex:"180,83,9",
+      score:1.40, level:"L1", label:"Execution Hub",
+      teams:["DSRE"],
+      insight:"DS sits at L1 overall — primarily reactive and execution-focused. Separate cluster in revised model. Requires foundational investment across all themes.",
+      themes:[
+        { name:"Leadership & Talent Flywheel", score:1.70 },
+        { name:"Capability Development", score:1.35 },
+        { name:"Organizational Effectiveness", score:1.40 },
+        { name:"Strategic Value Creation", score:1.15 }
+      ],
+      attributes:[
+        { name:"Leadership Pipeline & Succession", score:1.50, level:"L2", subLabel:"Early Pipeline" },
+        { name:"Talent Competitiveness Index", score:1.90, level:"L2", subLabel:"Market-Entry" },
+        { name:"JRA Intensity & Future Digital", score:1.80, level:"L2", subLabel:"Emerging Mix" },
+        { name:"AI Savviness & AI Leadership", score:0.80, level:"L1", subLabel:"Pre-AI Curious", critical:true },
+        { name:"Scalable Innovation", score:1.30, level:"L1", subLabel:"Ad-Hoc" },
+        { name:"Technical & Functional Depth", score:1.60, level:"L2", subLabel:"Basic Skills" },
+        { name:"End-to-End Global Ownership", score:1.40, level:"L1", subLabel:"Task Executor" },
+        { name:"Enterprise Value Creation", score:1.40, level:"L1", subLabel:"Output Tracker" },
+        { name:"Cost Stewardship", score:1.00, level:"L1", subLabel:"Budget Tracker", critical:true }
+      ],
+      actionItems:[
+        "Establish clear team charter with ownership and strategic direction",
+        "Invest in foundational AI literacy as first priority",
+        "Define key performance metrics and begin business impact measurement",
+        "Enroll leads in Finance for Non-Financial Managers training",
+        "Create 3-6 month roadmap to advance from L1 to L2 across all parameters"
+      ]
+    }
+  ],
+  // Lookup: team id → cluster id, used in renderCluster
+  clusterTeams: {
+    appliance: ["connectivity-platform","extended-services","plm-1","home-appliances-services"],
+    consumer: ["b2c-marketing","d2c","rsc","service-management"],
+    dataai: ["master-data"],
+    dps: ["xaas","rem","cross-user","platform-services"],
+    enterprise: ["glo","procurement","finance","b2b-presales","global-logistics"],
+    industry: ["digital-factory","factory-logistics","industrial-operations","industry-innovation"],
+    ds: ["dsre"]
+  },
+  teams: {
+    "connectivity-platform": {
+      id: "connectivity-platform",
+      name: "Connectivity Platform",
+      cluster: "Appliance Cluster",
+      clusterId: "appliance",
+      owner: "Anne Steinboeck",
+      sgl: "Gangadhar Kalapaneni",
+      date: "04.08.2026",
+      score: 1.9,
+      level: "L2",
+      label: "Capability Hub",
+      insight: "Building foundational capabilities beyond simple task execution. Key strength: attracting and retaining talent (L3). Primary development areas: strategic AI and financial discipline.",
+      themes:[
+        { name:"Leadership & Talent Flywheel", score:2.3, level:"L2" },
+        { name:"Capability Development", score:1.7, level:"L2" },
+        { name:"Organizational Effectiveness", score:2.0, level:"L2" },
+        { name:"Strategic Value Creation", score:1.5, level:"L2" }
+      ],
+      parameters:[
+        { theme:"Leadership & Talent Flywheel", name:"Leadership Pipeline & Succession", kpi:"% of critical roles with ready-now successor", score:2, level:"L2", subLabel:"Early Pipeline" },
+        { theme:"Leadership & Talent Flywheel", name:"Talent Competitiveness Index", kpi:"Offer acceptance rate & top performer attrition", score:3, level:"L3", subLabel:"Talent Destination" },
+        { theme:"Leadership & Talent Flywheel", name:"JRA Intensity & Future Digital", kpi:"% of workforce in Niche/Strategic roles", score:2, level:"L2", subLabel:"Specialized Mix" },
+        { theme:"Capability Development", name:"AI Savviness & AI Leadership", kpi:"AI project portfolio and team composition", score:1, level:"L1", subLabel:"AI Curious", critical:true },
+        { theme:"Capability Development", name:"Scalable Innovation", kpi:"PoC-to-production conversion rate", score:2, level:"L2", subLabel:"Structured Programs" },
+        { theme:"Capability Development", name:"Technical & Functional Depth", kpi:"Contribution to solution architecture", score:2, level:"L2", subLabel:"Specialized Skills" },
+        { theme:"Organizational Effectiveness", name:"End-to-End Global Ownership", kpi:"Locus of decision-making", score:2, level:"L2", subLabel:"Module Ownership" },
+        { theme:"Strategic Value Creation", name:"Enterprise Value Creation", kpi:"Business impact measurement", score:2, level:"L2", subLabel:"Productivity Gain" },
+        { theme:"Strategic Value Creation", name:"Cost Stewardship", kpi:"Approach to cost management", score:1, level:"L1", subLabel:"Budget Tracker", critical:true }
+      ],
+      actionPlan:{
+        ai:{ title:"Improving AI Savviness & AI Leadership", score:1,
+          rootCause:"The team is AI Curious — interest and basic literacy exist, but no strategic framework, dedicated roles, or formal process for moving AI PoCs to business solutions.",
+          actions:["Enroll tech leads in 'AI for Product Managers' or 'Machine Learning for Business' on Coursera/Udemy","Utilize internal BSH AI Trainings for all team members","Establish an AI Council (cross-functional, 3-5 members) to define top 3 AI use-cases","Introduce AI Project Intake Form: business problem, expected outcome, data requirements","Dedicate monthly meeting time to 'How could AI improve this?' brainstorming","Target: 3+ AI project proposals with clear business cases per quarter"]},
+        cost:{ title:"Improving Cost Stewardship", score:1,
+          rootCause:"Score of 1 indicates purely reactive cost management — focus is on 'spending the budget' rather than 'managing value'. Limits strategic trade-offs.",
+          actions:["Enroll project leads in 'Finance for Non-Financial Managers' courses","Mandate TCO/ROI template for all projects >40 hours","Introduce 'Value-Driven Savings' Program with quarterly awards","Add 'What is the TCO?' and 'What is the expected ROI?' as standard review questions","Shift language: from 'Is this within budget?' to 'Is this the best use of resources?'","Target: >25% new projects with documented TCO analysis"]}
+      }
+    },
+
+    "extended-services": {
+      id:"extended-services", name:"Extended Services", cluster:"Appliance Cluster", clusterId:"appliance",
+      owner:"Michael Bauer", sgl:"Gangadhar Kalapaneni", date:"04.08.2026",
+      score:1.67, level:"L2", label:"Capability Hub",
+      insight:"Extended Services has reliable execution with growing ownership. AI adoption and cost discipline are the primary levers for reaching L3. Technical skills are developing well.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.0},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:1.0},{name:"Strategic Value Creation",score:1.5}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:2,level:"L2",subLabel:"Market-Aligned"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:1,level:"L1",subLabel:"Task Executor"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:2,level:"L2",subLabel:"Productivity Gain"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"Ad-hoc AI experiments exist but no formal intake or success criteria. The team needs a structured approach to identify and pursue AI opportunities.",
+          actions:["Assign an AI Champion within the team to drive awareness","Attend cross-cluster AI Council meetings for shared learning","Submit 2+ AI project proposals using the standard Intake Form template","Pilot one AI-assisted task in the services workflow","Complete BSH internal AI foundational training"]},
+        cost:{title:"Improving Cost Stewardship",score:1,rootCause:"Cost decisions are reactive; no standard template for assessing the true value of new initiatives.",
+          actions:["Adopt cluster-level TCO/ROI template for all new service initiatives","Introduce cost checkpoint in project kick-off meetings","Identify one cost-saving opportunity per quarter and present to management","Use 'Is this the best use of resources?' as a standard question in reviews"]}
+      }
+    },
+
+    "plm-1": {
+      id:"plm-1", name:"PLM (1)", cluster:"Appliance Cluster", clusterId:"appliance",
+      owner:"Stefan Gruber", sgl:"Gangadhar Kalapaneni", date:"04.08.2026",
+      score:1.56, level:"L2", label:"Capability Hub",
+      insight:"PLM (1) shows strong talent competitiveness but requires focused investment in AI adoption and global ownership mindset to advance to L3. JRA mix needs modernization.",
+      themes:[{name:"Leadership & Talent Flywheel",score:1.67},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:1.0},{name:"Strategic Value Creation",score:1.5}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:2,level:"L2",subLabel:"Market-Aligned"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:1,level:"L1",subLabel:"Basic Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:1,level:"L1",subLabel:"Task Executor"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:2,level:"L2",subLabel:"Productivity Gain"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"Limited awareness of how AI can accelerate PLM processes; no structured exploration of AI integration into product lifecycle workflows.",
+          actions:["Map PLM workflows where AI could reduce manual effort (data quality, change management)","Enroll PLM specialists in AI-for-engineering courses","Pilot AI-assisted document classification or change impact analysis","Establish monthly AI discussion in team syncs","Target: one AI proof-of-concept launched by end of quarter"]},
+        cost:{title:"Improving Cost Stewardship",score:1,rootCause:"Cost management tied only to project budgets; no visibility into total lifecycle cost or value generated by PLM activities.",
+          actions:["Implement TCO analysis for all PLM tool decisions and integrations","Define business value metrics for PLM data quality improvements","Hold quarterly cost-benefit review for top 3 PLM initiatives","Introduce ROI tracking for configuration and data migration projects"]}
+      }
+    },
+
+    "home-appliances-services": {
+      id:"home-appliances-services", name:"Home Appliances Services", cluster:"Appliance Cluster", clusterId:"appliance",
+      owner:"Laura Fischer", sgl:"Gangadhar Kalapaneni", date:"04.08.2026",
+      score:1.78, level:"L2", label:"Capability Hub",
+      insight:"Home Appliances Services is the strongest team in the Appliance cluster. Talent Competitiveness at L3 is a key differentiator. Moving to full module ownership and AI adoption are next priorities.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:1.5}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:3,level:"L3",subLabel:"Talent Destination"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:2,level:"L2",subLabel:"Module Ownership"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:2,level:"L2",subLabel:"Productivity Gain"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"Strong talent base but AI capabilities not yet formally applied to service optimization. Good foundation to build on.",
+          actions:["Leverage strong talent base to fast-track AI pilot projects","Identify top 2 service scenarios where predictive AI could reduce cost or improve SLA","Enroll senior engineers in 'AI for Service Operations' track","Create AI use-case backlog reviewed monthly","Target: AI pilot launched within 90 days using IoT service data"]},
+        cost:{title:"Improving Cost Stewardship",score:1,rootCause:"Service cost management is reactive; opportunity exists to proactively model service delivery cost optimization.",
+          actions:["Model TCO for top 5 service delivery components","Introduce value-based pricing concepts in service planning","Track cost-per-service-incident and publish in team dashboard","Challenge each team member to identify one cost-reduction initiative per quarter"]}
+      }
+    },
+
+    "b2c-marketing": {
+      id:"b2c-marketing", name:"B2C Marketing & Analytics", cluster:"Consumer Cluster", clusterId:"consumer",
+      owner:"Sarah Hofer", sgl:"Consumer Hub Lead", date:"04.08.2026",
+      score:1.56, level:"L2", label:"Capability Hub",
+      insight:"B2C Marketing & Analytics has strong data analytics foundations but must build formal AI adoption frameworks and tighten financial ownership to reach L3.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.0},{name:"Capability Development",score:1.33},{name:"Organizational Effectiveness",score:1.0},{name:"Strategic Value Creation",score:1.5}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:2,level:"L2",subLabel:"Market-Aligned"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:1,level:"L1",subLabel:"Ad-Hoc"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:1,level:"L1",subLabel:"Task Executor"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:2,level:"L2",subLabel:"Productivity Gain"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"Analytics team has data assets but lacks formal AI project process. Campaigns use traditional analytics rather than predictive or generative AI.",
+          actions:["Define 3 marketing scenarios for AI application (churn prediction, content personalization, campaign optimization)","Enroll analytics engineers in ML for marketing courses","Partner with Data & AI cluster on a joint AI pilot","Establish AI sprint review in quarterly planning","Target: one production-ready AI model deployed to support campaign decisions"]},
+        cost:{title:"Improving Cost Stewardship",score:1,rootCause:"Marketing spend is tracked against budget but not systematically evaluated for ROI per channel or initiative.",
+          actions:["Implement channel-level ROI tracking dashboard","Require ROI forecast for all campaigns >€10k","Shift KPIs from 'budget spent' to 'revenue attributed per euro spent'","Review top 3 cost centers quarterly and identify 10% efficiency target"]}
+      }
+    },
+
+    "d2c": {
+      id:"d2c", name:"D2C", cluster:"Consumer Cluster", clusterId:"consumer",
+      owner:"Jonas Weber", sgl:"Consumer Hub Lead", date:"04.08.2026",
+      score:1.44, level:"L1", label:"Execution Hub",
+      insight:"D2C team executes well but operates reactively. Ownership mindset, AI capability, and cost discipline need foundational investment for L2 advancement.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.0},{name:"Capability Development",score:1.33},{name:"Organizational Effectiveness",score:1.0},{name:"Strategic Value Creation",score:1.0}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:2,level:"L2",subLabel:"Market-Aligned"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:1,level:"L1",subLabel:"Ad-Hoc"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:1,level:"L1",subLabel:"Task Executor"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:1,level:"L1",subLabel:"Output Tracker"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"D2C team has no formal AI exploration. Customer journey optimization and personalization are prime candidates for AI but remain unaddressed.",
+          actions:["Map D2C customer journey touch-points for AI opportunity assessment","Pilot AI-based product recommendation engine as first use-case","Enroll key members in 'AI for E-Commerce' track","Join Consumer cluster AI Council","Complete BSH foundational AI training for all team members"]},
+        cost:{title:"Improving Cost Stewardship",score:1,rootCause:"Cost management is purely operational; no systematic view of unit economics, CAC, or LTV.",
+          actions:["Define and track Customer Acquisition Cost (CAC) and Lifetime Value (LTV) monthly","Build D2C unit economics dashboard","Introduce cost-per-conversion tracking across all channels","Require business case with ROI projection for all new D2C features"]}
+      }
+    },
+
+    "rsc": {
+      id:"rsc", name:"RSC", cluster:"Consumer Cluster", clusterId:"consumer",
+      owner:"Nina Müller", sgl:"Consumer Hub Lead", date:"04.08.2026",
+      score:1.44, level:"L1", label:"Execution Hub",
+      insight:"RSC operates as a reliable execution unit. Strategic value creation and AI adoption require priority investment. Building ownership mindset is the foundational next step.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.0},{name:"Capability Development",score:1.33},{name:"Organizational Effectiveness",score:1.0},{name:"Strategic Value Creation",score:1.0}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:2,level:"L2",subLabel:"Market-Aligned"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:1,level:"L1",subLabel:"Ad-Hoc"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:1,level:"L1",subLabel:"Task Executor"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:1,level:"L1",subLabel:"Output Tracker"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"RSC processes are largely manual; AI automation and intelligent service routing have not been explored.",
+          actions:["Identify top 3 RSC workflows suitable for AI automation","Partner with Data & AI cluster to build a service routing or classification model","Enroll 2 leads in AI for service operations training","Implement basic ML-driven priority scoring for incoming service requests"]},
+        cost:{title:"Improving Cost Stewardship",score:1,rootCause:"Service cost is not linked to outcome metrics; no cost-per-resolution or cost-per-escalation tracking.",
+          actions:["Define cost-per-service-resolution metric and begin tracking","Identify top 3 cost drivers in service operations and set reduction targets","Pilot 'value stream mapping' workshop to surface waste and inefficiency","Report cost efficiency in monthly team reviews"]}
+      }
+    },
+
+    "service-management": {
+      id:"service-management", name:"Service Management", cluster:"Consumer Cluster", clusterId:"consumer",
+      owner:"Thomas Lehner", sgl:"Consumer Hub Lead", date:"04.08.2026",
+      score:1.56, level:"L2", label:"Capability Hub",
+      insight:"Service Management is the strongest team in Consumer cluster. Structured innovation programs are in place; AI and cost leadership are next development priorities.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.0},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:1.0},{name:"Strategic Value Creation",score:1.0}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:2,level:"L2",subLabel:"Market-Aligned"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:1,level:"L1",subLabel:"Task Executor"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:1,level:"L1",subLabel:"Output Tracker"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"Service management processes are established but not yet augmented with intelligent automation or predictive capabilities.",
+          actions:["Explore AI for predictive service demand forecasting","Pilot intelligent ticket routing and categorization","Build AI literacy baseline across all service management roles","Define 'AI-ready' service management architecture with Data & AI cluster"]},
+        cost:{title:"Improving Cost Stewardship",score:1,rootCause:"Service costs tracked operationally but not tied to business outcomes or value delivery benchmarks.",
+          actions:["Introduce cost-per-outcome metrics (e.g., cost per resolved ticket, per SLA met)","Build service cost forecast model for quarterly planning","Establish cost-saving challenge within the team with recognition","Align service delivery costs to business value KPIs"]}
+      }
+    },
+
+    "master-data": {
+      id:"master-data", name:"Master Data", cluster:"Data & AI Cluster", clusterId:"dataai",
+      owner:"Priya Sharma", sgl:"Data & AI Hub Lead", date:"04.08.2026",
+      score:1.89, level:"L2", label:"Capability Hub",
+      insight:"Master Data has strong technical depth and talent retention. As the data foundation for hub-wide AI initiatives, elevating AI and innovation processes here has multiplier effect across all clusters.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:1.5}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:3,level:"L3",subLabel:"Talent Destination"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:2,level:"L2",subLabel:"Module Ownership"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:2,level:"L2",subLabel:"Productivity Gain"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"Master Data team manages critical data assets but AI applications for data quality, anomaly detection, and lineage are not yet formalized.",
+          actions:["Deploy AI-driven data quality monitoring on top 3 critical data domains","Build an AI data readiness scorecard for each business domain","Establish Master Data team as the AI data stewardship center of excellence","Partner with analytics teams to define AI-ready data standards","Target: ML model for automated duplicate detection in production by Q3"]},
+        cost:{title:"Improving Cost Stewardship",score:1,rootCause:"Data management costs are not systematically linked to business value delivered per data domain.",
+          actions:["Define cost-per-domain-managed metric and baseline","Build TCO model for data quality improvement initiatives","Identify top 3 data quality issues with highest cost-to-business and prioritize","Introduce quarterly value review: data quality improvements vs. cost avoided"]}
+      }
+    },
+
+    "xaas": {
+      id:"xaas", name:"XAAS", cluster:"DPS Cluster", clusterId:"dps",
+      owner:"Andreas Kramer", sgl:"DPS Hub Lead", date:"04.08.2026",
+      score:1.89, level:"L2", label:"Capability Hub",
+      insight:"XAAS leads the DPS cluster in platform service delivery. Strong talent competitiveness and structured innovation. AI-as-a-service capability and cost modeling are key next steps.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:1.5}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:3,level:"L3",subLabel:"Talent Destination"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:2,level:"L2",subLabel:"Module Ownership"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:2,level:"L2",subLabel:"Productivity Gain"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"XAAS platform capabilities exist but AI services are not yet offered or embedded as platform-level capabilities.",
+          actions:["Define AI services roadmap as part of XAAS platform offering","Build AI capability catalogue for hub-wide self-service consumption","Pilot ML model serving infrastructure on XAAS platform","Establish AI platform governance model","Target: 2 AI services productized on XAAS by end of year"]},
+        cost:{title:"Improving Cost Stewardship",score:1,rootCause:"Platform cost per consumer is not tracked; no chargeback or showback model to drive cost-aware consumption.",
+          actions:["Implement platform cost allocation model (showback at minimum)","Define cost-per-service unit metrics for all XAAS offerings","Engage consumers in cost optimization conversations quarterly","Introduce reserved capacity planning to reduce on-demand premiums"]}
+      }
+    },
+
+    "rem": {
+      id:"rem", name:"REM", cluster:"DPS Cluster", clusterId:"dps",
+      owner:"Claudia Becker", sgl:"DPS Hub Lead", date:"04.08.2026",
+      score:1.78, level:"L2", label:"Capability Hub",
+      insight:"REM has solid execution and growing ownership capability. Investment in AI tooling and financial acumen will differentiate REM as a strategic platform partner.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.0},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:1.5}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:2,level:"L2",subLabel:"Market-Aligned"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:2,level:"L2",subLabel:"Module Ownership"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:2,level:"L2",subLabel:"Productivity Gain"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"REM operations have automation potential but AI has not been formally introduced into release or environment management workflows.",
+          actions:["Explore AI for predictive release risk scoring","Pilot anomaly detection for environment monitoring","Enroll DevOps leads in AIOps training","Integrate AI alerting into existing release pipeline"]},
+        cost:{title:"Improving Cost Stewardship",score:1,rootCause:"Infrastructure costs are tracked but not optimized; no systematic right-sizing or cost-efficiency program.",
+          actions:["Implement cloud cost tagging and attribution model","Run quarterly right-sizing review for all managed environments","Set environment cost reduction target (10% YoY) and track progress","Introduce FinOps principles into release and environment planning"]}
+      }
+    },
+
+    "cross-user": {
+      id:"cross-user", name:"Cross / User", cluster:"DPS Cluster", clusterId:"dps",
+      owner:"Felix Richter", sgl:"DPS Hub Lead", date:"04.08.2026",
+      score:1.78, level:"L2", label:"Capability Hub",
+      insight:"Cross / User is a bridge team enabling platform consumption. Ownership of the cross-cutting user experience requires AI and value measurement uplift to reach L3.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.0},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:1.5}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:2,level:"L2",subLabel:"Market-Aligned"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:2,level:"L2",subLabel:"Module Ownership"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:2,level:"L2",subLabel:"Productivity Gain"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"User experience layer is manually designed; AI-driven personalization and accessibility features are not yet explored.",
+          actions:["Explore AI for adaptive UX personalization","Pilot AI accessibility features (intelligent help, auto-suggestions)","Define cross-team AI UX standards with XAAS platform team","Assign UX AI champion to lead exploration"]},
+        cost:{title:"Improving Cost Stewardship",score:1,rootCause:"Cross-cutting components lack cost attribution; shared service costs are absorbed without visibility.",
+          actions:["Map cross-cutting component cost to consuming teams","Introduce shared component ROI review quarterly","Optimize reusable component library to reduce duplication cost","Define cost model for cross-team feature requests"]}
+      }
+    },
+
+    "platform-services": {
+      id:"platform-services", name:"Platform Services", cluster:"DPS Cluster", clusterId:"dps",
+      owner:"Hannah Wolf", sgl:"DPS Hub Lead", date:"04.08.2026",
+      score:1.89, level:"L2", label:"Capability Hub",
+      insight:"Platform Services anchors DPS with strong technical depth. Productizing AI capabilities and maturing financial ownership will unlock the transition from platform provider to strategic platform partner.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:1.5}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:3,level:"L3",subLabel:"Talent Destination"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:2,level:"L2",subLabel:"Module Ownership"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:2,level:"L2",subLabel:"Productivity Gain"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"Platform capabilities are strong but AI workload management, ML pipeline hosting, and AI observability are not yet standardized.",
+          actions:["Define platform-level AI workload standards and SLAs","Build MLOps pipeline on platform services infrastructure","Enable self-service AI model deployment for Hub teams","Establish AI platform observability and governance tooling"]},
+        cost:{title:"Improving Cost Stewardship",score:1,rootCause:"Platform operational costs are not visible to consumers; no shared responsibility model for cost optimization.",
+          actions:["Implement full FinOps tagging and attribution","Publish monthly platform cost dashboard to all consuming teams","Set platform efficiency KPIs and track quarter-on-quarter","Introduce reserved vs. on-demand cost optimization program"]}
+      }
+    },
+
+    "glo": {
+      id:"glo", name:"GLO", cluster:"Enterprise Cluster", clusterId:"enterprise",
+      owner:"Markus Hoffmann", sgl:"Enterprise Hub Lead", date:"04.08.2026",
+      score:2.11, level:"L2", label:"Capability Hub (High)",
+      insight:"GLO is one of the Hub's strongest teams. Proactive ownership and measurable value creation are well established. AI is the critical final barrier to L3 designation.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.67},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:2.0}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:3,level:"L3",subLabel:"Deep Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:3,level:"L3",subLabel:"Talent Destination"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:2,level:"L2",subLabel:"Module Ownership"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:3,level:"L3",subLabel:"Value Champion"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"GLO has strong process maturity but AI has not yet been embedded into global logistics intelligence or predictive operations.",
+          actions:["Launch GLO AI task force to identify top 3 AI use-cases (demand forecasting, route optimization, disruption prediction)","Partner with Data & AI cluster on predictive logistics model","Enroll key operations leads in 'AI for Supply Chain' certification","Deploy first AI-powered operations dashboard within 90 days","Target: AI-driven insight influencing at least one operational decision per week"]},
+        cost:{title:"Improving Cost Stewardship",score:1,rootCause:"Despite strong value creation, GLO cost management remains budget-oriented rather than value-optimized.",
+          actions:["Build TCO model for top 5 global logistics processes","Introduce cost-per-outcome metrics aligned to global SLAs","Launch cost challenge program across GLO sub-teams","Shift planning from 'budget allocation' to 'value investment portfolio'"]}
+      }
+    },
+
+    "procurement": {
+      id:"procurement", name:"Procurement", cluster:"Enterprise Cluster", clusterId:"enterprise",
+      owner:"Elena Braun", sgl:"Enterprise Hub Lead", date:"04.08.2026",
+      score:2.0, level:"L2", label:"Capability Hub",
+      insight:"Procurement shows strong strategic value measurement. Category management and supplier analytics are mature. AI-driven sourcing intelligence is the key next capability.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:2.0}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:3,level:"L3",subLabel:"Talent Destination"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:2,level:"L2",subLabel:"Module Ownership"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:3,level:"L3",subLabel:"Value Champion"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"Procurement processes are structured but vendor selection, risk analysis, and contract management are not yet AI-augmented.",
+          actions:["Deploy AI spend analytics for category-level insight","Pilot AI-driven supplier risk scoring","Implement NLP contract analysis to surface risk clauses automatically","Enroll procurement leads in 'AI for Procurement' certification","Target: AI-informed vendor decisions in 30% of sourcing events by end of year"]},
+        cost:{title:"Improving Cost Stewardship",score:1,rootCause:"Spend is managed against budget but total value (quality, risk, innovation) is not consistently factored into supplier decisions.",
+          actions:["Introduce Total Value of Ownership (TVO) model alongside TCO","Track cost avoidance alongside cost savings in procurement KPIs","Embed 'value vs. cost' decision framework in all RFP templates","Publish quarterly procurement value scorecard"]}
+      }
+    },
+
+    "finance": {
+      id:"finance", name:"Finance", cluster:"Enterprise Cluster", clusterId:"enterprise",
+      owner:"Daniel Koch", sgl:"Enterprise Hub Lead", date:"04.08.2026",
+      score:2.11, level:"L2", label:"Capability Hub (High)",
+      insight:"Finance team has deep cost stewardship capability and strong pipeline. AI for financial forecasting and automated reporting are the natural next innovation frontier.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:2.5}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:3,level:"L3",subLabel:"Deep Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:2,level:"L2",subLabel:"Market-Aligned"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:2,level:"L2",subLabel:"Solution Ownership"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:3,level:"L3",subLabel:"Value Champion"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:2,level:"L2",subLabel:"Cost-Aware"}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"Finance processes are well-structured but financial forecasting, anomaly detection, and reporting automation are not yet AI-driven.",
+          actions:["Pilot AI-driven financial forecasting model for hub-level planning","Deploy anomaly detection on P&L reporting pipeline","Explore generative AI for automated financial narrative generation","Enroll finance analysts in 'AI for Finance' certifications","Target: AI-assisted close process reducing cycle time by 20%"]},
+        cost:{title:"Improving Cost Stewardship",score:2,rootCause:"Good cost awareness exists but cost optimization is not yet systematically linked to value outcomes and strategic trade-off decisions.",
+          actions:["Evolve from cost tracking to value portfolio management","Introduce scenario-based cost modelling for all major investments","Build shared cost intelligence dashboard for all cluster leads","Champion FinOps culture Hub-wide as center of excellence"]}
+      }
+    },
+
+    "b2b-presales": {
+      id:"b2b-presales", name:"B2B Presales & Sales", cluster:"Enterprise Cluster", clusterId:"enterprise",
+      owner:"Sophie Wagner", sgl:"Enterprise Hub Lead", date:"04.08.2026",
+      score:2.11, level:"L2", label:"Capability Hub (High)",
+      insight:"B2B Presales & Sales team demonstrates strong ownership and value creation. AI for sales intelligence and cost modeling are the accelerators to reach L3 Strategic Partner.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:2.5}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:3,level:"L3",subLabel:"Talent Destination"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:2,level:"L2",subLabel:"Module Ownership"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:3,level:"L3",subLabel:"Value Champion"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:2,level:"L2",subLabel:"Cost-Aware"}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"Sales cycle intelligence is experience-driven; AI for lead scoring, win/loss prediction, and proposal optimization has not been applied.",
+          actions:["Deploy AI lead scoring model on B2B pipeline","Pilot AI-assisted proposal generation and pricing optimization","Integrate CRM AI insights into weekly sales reviews","Enroll sales leads in 'AI-Powered Selling' course","Target: AI-driven win probability visible on all deals >€50k"]},
+        cost:{title:"Improving Cost Stewardship",score:2,rootCause:"Cost-of-sale metrics exist but are not fully linked to deal profitability and long-term customer value.",
+          actions:["Track cost-of-sale per deal segment and optimize","Build deal profitability model including implementation and support costs","Shift quota design from revenue-only to margin-aware targets","Review top 5 low-margin deals quarterly to improve commercial approach"]}
+      }
+    },
+
+    "global-logistics": {
+      id:"global-logistics", name:"Global Logistics", cluster:"Enterprise Cluster", clusterId:"enterprise",
+      owner:"Robert Schäfer", sgl:"Enterprise Hub Lead", date:"04.08.2026",
+      score:2.0, level:"L2", label:"Capability Hub",
+      insight:"Global Logistics shows consistent L2 performance. Digitizing logistics intelligence with AI and shifting to proactive cost stewardship are the priority actions for L3.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:2.0}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:3,level:"L3",subLabel:"Talent Destination"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:2,level:"L2",subLabel:"Module Ownership"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:3,level:"L3",subLabel:"Value Champion"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"Logistics operations rely on manual scheduling and reactive exception management; predictive and optimization AI not yet deployed.",
+          actions:["Pilot AI-based shipment delay prediction","Deploy route optimization model for outbound logistics","Introduce AI for customs and compliance risk screening","Build demand-driven replenishment model with AI","Target: 5% logistics cost reduction through AI optimization within 12 months"]},
+        cost:{title:"Improving Cost Stewardship",score:1,rootCause:"Logistics costs are tracked by mode/lane but not optimized as a portfolio; no scenario modelling for network decisions.",
+          actions:["Build logistics network TCO model (carrier, mode, lane)","Introduce scenario-based cost modelling for network design decisions","Track cost-per-unit-delivered and publish monthly","Drive quarterly logistics cost challenge with carrier negotiations"]}
+      }
+    },
+
+    "digital-factory": {
+      id:"digital-factory", name:"Digital Factory", cluster:"Industry Cluster", clusterId:"industry",
+      owner:"Klaus Berger", sgl:"Industry Hub Lead", date:"04.08.2026",
+      score:2.11, level:"L2", label:"Capability Hub (High)",
+      insight:"Digital Factory is the innovation leader in the Industry cluster. Strong technical depth and scalable innovation. AI for predictive manufacturing and cost optimization are the L3 breakthrough areas.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:2.33},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:1.5}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:3,level:"L3",subLabel:"Talent Destination"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:2,level:"L2",subLabel:"AI Explorer"},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:3,level:"L3",subLabel:"Architecture Lead"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:2,level:"L2",subLabel:"Module Ownership"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:2,level:"L2",subLabel:"Productivity Gain"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Scaling AI Leadership",score:2,rootCause:"Good AI exploration underway but formal AI-to-production pipeline and business case framework need strengthening to reach L3.",
+          actions:["Formalize AI project pipeline with stage-gate from PoC to production","Establish AI ROI measurement standard for all manufacturing AI initiatives","Scale predictive maintenance pilot to 3 additional production lines","Publish Digital Factory AI playbook for other Industry teams","Target: 3 AI use-cases in production generating measurable output impact"]},
+        cost:{title:"Improving Cost Stewardship",score:1,rootCause:"Manufacturing cost management is strong operationally but not yet connected to digital initiative ROI.",
+          actions:["Build TCO model for digital factory initiatives including change management costs","Link digital initiative spend to OEE (Overall Equipment Effectiveness) improvement","Introduce cost-per-quality-point metric for digital quality inspection initiatives","Quarterly digital factory ROI review with plant management"]}
+      }
+    },
+
+    "factory-logistics": {
+      id:"factory-logistics", name:"Factory Logistics", cluster:"Industry Cluster", clusterId:"industry",
+      owner:"Petra Müller", sgl:"Industry Hub Lead", date:"04.08.2026",
+      score:1.89, level:"L2", label:"Capability Hub",
+      insight:"Factory Logistics has solid execution and growing technical ownership. Implementing AI for logistics optimization and tightening cost-value linkage are priority actions.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:1.5}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:3,level:"L3",subLabel:"Talent Destination"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:2,level:"L2",subLabel:"Module Ownership"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:2,level:"L2",subLabel:"Productivity Gain"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"Factory logistics processes are optimized for throughput but lack predictive intelligence for inbound material flows and WIP management.",
+          actions:["Deploy AI for inbound material delivery prediction","Pilot computer vision for automated WIP tracking in production lines","Implement AI demand signal integration from Digital Factory","Enroll logistics engineers in AI for operations courses"]},
+        cost:{title:"Improving Cost Stewardship",score:1,rootCause:"Internal logistics costs are tracked but not linked to production value delivered or line stoppage prevention.",
+          actions:["Define cost-per-line-delivery metric and set improvement target","Build TCO model including expediting, rework, and delay costs","Introduce quarterly cost-vs-performance review with production teams","Implement cost transparency dashboard for all factory logistics flows"]}
+      }
+    },
+
+    "industrial-operations": {
+      id:"industrial-operations", name:"Industrial Operations", cluster:"Industry Cluster", clusterId:"industry",
+      owner:"Tobias Schwarz", sgl:"Industry Hub Lead", date:"04.08.2026",
+      score:1.89, level:"L2", label:"Capability Hub",
+      insight:"Industrial Operations is a reliable L2 team with growing ownership. Scaling AI for operational intelligence and building financial discipline are the key investment areas.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.0},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:1.5}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:2,level:"L2",subLabel:"Market-Aligned"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:2,level:"L2",subLabel:"Module Ownership"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:2,level:"L2",subLabel:"Productivity Gain"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Improving AI Savviness & AI Leadership",score:1,rootCause:"Operations team is technically capable but AI augmentation of operational decision-making has not been formalized.",
+          actions:["Deploy AI for predictive OEE analysis","Implement anomaly detection on production sensor data","Partner with Digital Factory on shared AI operations infrastructure","Enroll operations engineers in Industrial AI certification"]},
+        cost:{title:"Improving Cost Stewardship",score:1,rootCause:"Operational costs are managed within budget cycles; no dynamic cost-vs-throughput optimization model.",
+          actions:["Build cost-per-unit-produced model for top 3 production lines","Introduce weekly cost efficiency review for operations leads","Define digital investment ROI standard linked to OEE metrics","Set annual 5% operational cost efficiency target and track monthly"]}
+      }
+    },
+
+    "industry-innovation": {
+      id:"industry-innovation", name:"Industry Innovation", cluster:"Industry Cluster", clusterId:"industry",
+      owner:"Carla Braun", sgl:"Industry Hub Lead", date:"04.08.2026",
+      score:2.11, level:"L2", label:"Capability Hub (High)",
+      insight:"Industry Innovation team demonstrates the strongest AI exploration in the Industry cluster. Formalizing the AI pipeline and financial discipline will unlock L3.",
+      themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:2.0},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:2.0}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:3,level:"L3",subLabel:"Talent Destination"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:2,level:"L2",subLabel:"AI Explorer"},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:2,level:"L2",subLabel:"Module Ownership"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:2,level:"L2",subLabel:"Productivity Gain"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:2,level:"L2",subLabel:"Cost-Aware"}
+      ],
+      actionPlan:{
+        ai:{title:"Scaling AI Innovation",score:2,rootCause:"Good AI exploration exists but a systematic innovation pipeline from ideation to scaled production is not yet operational.",
+          actions:["Establish formal Innovation Funnel with stage-gate criteria from idea to production","Mandate PoC Charter with business hypothesis and success metrics for every pilot","Dedicate 20% of sprint capacity to AI innovation sprints","Build innovation KPI dashboard: ideas submitted, PoCs running, scaled solutions","Host quarterly Industry cluster Innovation Showcase"]},
+        cost:{title:"Improving Cost Stewardship",score:2,rootCause:"Innovation investments are made but ROI is not systematically measured post-deployment.",
+          actions:["Introduce innovation ROI tracking 6-months post-deployment for every scaled solution","Build innovation investment portfolio dashboard","Balance innovation portfolio between quick wins and transformative bets","Share innovation ROI results with Hub leadership quarterly"]}
+      }
+    },
+
+    "dsre": {
+      id:"dsre", name:"DSRE", cluster:"DS (Digital Security) Cluster", clusterId:"ds",
+      owner:"Martin Schreiber", sgl:"DS Hub Lead", date:"04.08.2026",
+      score:1.44, level:"L1", label:"Execution Hub",
+      insight:"DSRE operates in a foundational L1 state. Security excellence is a strength but must be complemented by AI capability, strategic ownership, and financial discipline. A structured 6-month uplift plan is recommended.",
+      themes:[{name:"Leadership & Talent Flywheel",score:1.67},{name:"Capability Development",score:1.33},{name:"Organizational Effectiveness",score:1.0},{name:"Strategic Value Creation",score:1.0}],
+      parameters:[
+        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
+        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:1,level:"L1",subLabel:"High Turnover Risk"},
+        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Emerging Mix"},
+        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:1,level:"L1",subLabel:"Pre-AI Curious",critical:true},
+        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:1,level:"L1",subLabel:"Ad-Hoc"},
+        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
+        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:1,level:"L1",subLabel:"Task Executor"},
+        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:1,level:"L1",subLabel:"Output Tracker"},
+        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:1,level:"L1",subLabel:"Budget Tracker",critical:true}
+      ],
+      actionPlan:{
+        ai:{title:"Building AI Savviness & AI Leadership",score:1,rootCause:"Security domain has high potential for AI (threat detection, anomaly analysis) but no AI roadmap or formal exploration exists.",
+          actions:["Define DSRE AI security roadmap — focus on threat detection and automated response","Enroll DSRE engineers in 'AI for Cybersecurity' specialized training","Pilot AI anomaly detection on security event log data","Join Hub-level AI Council to benefit from shared AI infrastructure","Target: one AI-assisted security detection rule in production within 90 days"]},
+        cost:{title:"Building Cost Stewardship",score:1,rootCause:"Security spend is entirely reactive and compliance-driven; no business value linkage or cost optimization program.",
+          actions:["Define security value metrics beyond compliance: incidents prevented, MTTR, coverage","Build security TCO model including tooling, licensing, and response effort","Introduce quarterly security investment review with business risk linkage","Align security investments to business risk reduction value"]}
+      }
+    }
+  }
+};
+
+// ─── STATE ───────────────────────────────────────────────────────────
+let state = { level:"hub", clusterId:null, teamId:null, view:"cards" };
+let charts = {};
+
+function lvClass(l){ return l==="L1"?"lv-l1":l==="L2"?"lv-l2":l==="L3"?"lv-l3":"lv-l4"; }
+function lvName(s){ return s<1.5?"L1":s<2.5?"L2":s<3.5?"L3":"L4"; }
+function getLevelLabel(l){
+  const m={L1:"Execution Hub",L2:"Capability Hub",L3:"Strategic Partner",L4:"Transformation Engine"};
+  return m[l]||"";
+}
+function scoreColor(s){ return s<1.5?"#dc2626":s<2.5?"#d97706":s<3.5?"#16a34a":"#2563eb"; }
+
+// ─── NAV ─────────────────────────────────────────────────────────────
+function nav_hub(){ state={...state,level:"hub",clusterId:null,teamId:null}; render(); }
+function nav_cluster(id){ state={...state,level:"cluster",clusterId:id,teamId:null}; render(); }
+function nav_team(id){ state={...state,level:"team",teamId:id}; render(); }
+function setView(v){
+  state.view=v;
+  document.querySelectorAll(".v-btn").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".v-btn")[v==="cards"?0:1].classList.add("active");
+  render();
+}
+
+// ─── BREADCRUMB ───────────────────────────────────────────────────────
+function renderBreadcrumb(){
+  const bc = document.getElementById("breadcrumb");
+  let html = `<span class="bc-item ${state.level==="hub"?"active":""}" onclick="nav_hub()">Hub Overview</span>`;
+  if(state.clusterId){
+    const c = DATA.clusters.find(x=>x.id===state.clusterId);
+    html += `<span class="bc-sep">›</span><span class="bc-item ${state.level==="cluster"?"active":""}" onclick="nav_cluster('${state.clusterId}')">${c.name}</span>`;
+  }
+  if(state.level==="team" && state.teamId){
+    const t = DATA.teams[state.teamId];
+    html += `<span class="bc-sep">›</span><span class="bc-item active">${t.name}</span>`;
+  }
+  bc.innerHTML = html;
+}
+
+// ─── MAIN RENDER ─────────────────────────────────────────────────────
+function render(){
+  destroyCharts();
+  renderBreadcrumb();
+  const ca = document.getElementById("contentArea");
+  if(state.level==="hub") ca.innerHTML = renderHub();
+  else if(state.level==="cluster") ca.innerHTML = renderCluster();
+  else ca.innerHTML = renderTeam();
+  requestAnimationFrame(()=>{ renderCharts(); });
+}
+
+// ─── HUB VIEW ────────────────────────────────────────────────────────
+function renderHub(){
+  const h = DATA.hub;
+  return `
+    <div class="section">
+      <div class="section-title">BSH Global Hub — Maturity Overview</div>
+      <div class="section-sub">Consolidated across ${h.clustersCount} clusters, ${h.teamsCount}+ teams, ${h.parametersCount} parameters</div>
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-label">Overall Score</div><div class="kpi-val" style="color:${scoreColor(h.score)}">${h.score.toFixed(2)}</div><div class="kpi-sub">All clusters average</div><span class="kpi-badge lv-${h.level.toLowerCase()}">${h.level} · ${h.label}</span></div>
+        <div class="kpi"><div class="kpi-label">Teams Assessed</div><div class="kpi-val">${h.teamsCount}+</div><div class="kpi-sub">Across all clusters</div></div>
+        <div class="kpi"><div class="kpi-label">Critical Gap</div><div class="kpi-val" style="color:#dc2626">1.15</div><div class="kpi-sub">AI Savviness & Leadership</div><span class="kpi-badge lv-l1">L1 · AI Curious</span></div>
+        <div class="kpi"><div class="kpi-label">Strongest Param</div><div class="kpi-val" style="color:#16a34a">2.37</div><div class="kpi-sub">Talent Competitiveness</div><span class="kpi-badge lv-l2">L2 · Market-Aligned</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Assessment Themes</div>
+      <div class="section-sub">Four key evaluation dimensions across all teams</div>
+      <div class="theme-grid">
+        ${h.themes.map(t=>themeCard(t)).join("")}
+      </div>
+    </div>
+
+    <div class="charts-2col">
+      <div class="chart-wrap"><div class="chart-title">Cluster Score Comparison</div><div class="chart-inner"><canvas id="clusterBarChart"></canvas></div></div>
+      <div class="chart-wrap"><div class="chart-title">Hub Parameter Radar</div><div class="chart-inner"><canvas id="hubRadarChart"></canvas></div></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Clusters</div>
+      <div class="section-sub">Click any cluster to drill down into team-level data</div>
+      ${state.view==="cards" ? renderClusterCards() : renderClusterTable()}
+    </div>
+
+    <div class="section">
+      <div class="section-title">Hub Parameter Scorecard (9 Attributes)</div>
+      <div class="section-sub">Ranked by score · L3 threshold line at 2.5</div>
+      ${renderAttrList(h.attributes)}
+    </div>
+
+    <div class="insight-box">
+      <p><strong>Hub Insight:</strong> ${h.insight}</p>
+    </div>
+  `;
+}
+
+function themeCard(t){
+  const pct=(t.score/4)*100;
+  const lv=lvName(t.score);
+  const color=scoreColor(t.score);
+  return `<div class="tc">
+    <div class="tc-icon">${t.icon||"📊"}</div>
+    <div class="tc-name">${t.name}</div>
+    <div class="tc-score" style="color:${color}">${t.score.toFixed(2)}</div>
+    <div class="tc-bar"><div class="tc-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+    <span class="tc-lv ${lvClass(lv)}">${lv} · ${getLevelLabel(lv)}</span>
+  </div>`;
+}
+
+function renderClusterCards(){
+  return `<div class="cards-grid">${DATA.clusters.map(c=>`
+    <div class="card drill" onclick="nav_cluster('${c.id}')">
+      <div class="card-top">
+        <div><div class="card-name">${c.name}</div><div class="card-meta">${c.teams.length} teams</div></div>
+        <div class="card-score-block">
+          <div class="cscore" style="color:${scoreColor(c.score)}">${c.score.toFixed(2)}</div>
+          <span class="clv ${lvClass(c.level)}">${c.level}</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-list">${c.teams.slice(0,3).map(t=>`<div class="card-li">• ${t}</div>`).join("")}${c.teams.length>3?`<div class="card-li" style="color:var(--light)">+${c.teams.length-3} more teams</div>`:""}</div>
+    </div>
+  `).join("")}</div>`;
+}
+
+function renderClusterTable(){
+  return `<div class="tbl-wrap"><table>
+    <thead><tr><th>Cluster</th><th>Score</th><th>Level</th><th>Teams</th><th>Progress to L3 (2.5)</th></tr></thead>
+    <tbody>${DATA.clusters.map(c=>`
+      <tr class="clicky" onclick="nav_cluster('${c.id}')">
+        <td><strong>${c.name}</strong></td>
+        <td style="font-weight:700;color:${scoreColor(c.score)}">${c.score.toFixed(2)}</td>
+        <td><span class="lv-badge ${lvClass(c.level)}">${c.level} · ${getLevelLabel(c.level)}</span></td>
+        <td>${c.teams.length}</td>
+        <td><div class="pbar"><div class="ptrack"><div class="pfill" style="width:${(c.score/2.5*100).toFixed(0)}%;background:${scoreColor(c.score)}"></div></div><span style="font-size:12px;font-weight:600;color:var(--mid)">${(c.score/2.5*100).toFixed(0)}%</span></div></td>
+      </tr>`).join("")}
+    </tbody>
+  </table></div>`;
+}
+
+function renderAttrList(attrs){
+  const sorted=[...attrs].sort((a,b)=>b.score-a.score);
+  return `<div class="attr-list">${sorted.map(a=>{
+    const pct=(a.score/4)*100;
+    const lv=lvName(a.score);
+    const color=scoreColor(a.score);
+    return `<div class="attr-item ${a.critical?"crit":""}">
+      <div class="attr-name ${a.critical?"cn":""}">${a.name}${a.critical?" 🔴":""}</div>
+      <div class="attr-bar">
+        <div class="attr-track ${a.critical?"crit-t":""}">
+          <div class="attr-fill" style="width:${pct}%;background:${color}"></div>
+          <div class="attr-mark"></div>
+        </div>
+      </div>
+      <div class="attr-val" style="color:${color}">${a.score.toFixed(2)}</div>
+      <div class="attr-lv"><span class="lv-badge ${lvClass(lv)}">${lv}</span></div>
+    </div>`;
+  }).join("")}</div>`;
+}
+
+// ─── CLUSTER VIEW ─────────────────────────────────────────────────────
+function renderCluster(){
+  const c = DATA.clusters.find(x=>x.id===state.clusterId);
+  if(!c) return "<p>Cluster not found</p>";
+  const teamIds = DATA.clusterTeams[c.id] || [];
+  const teamsInCluster = teamIds.map(id=>DATA.teams[id]).filter(Boolean);
+
+  return `
+    <button class="back-btn" onclick="nav_hub()">← Hub Overview</button>
+
+    <div class="section">
+      <div class="section-title">${c.name}</div>
+      <div class="section-sub">${c.teams.length} teams · Overall score ${c.score.toFixed(2)}</div>
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-label">Cluster Score</div><div class="kpi-val" style="color:${scoreColor(c.score)}">${c.score.toFixed(2)}</div><div class="kpi-sub">${c.label}</div><span class="kpi-badge ${lvClass(c.level)}">${c.level}</span></div>
+        <div class="kpi"><div class="kpi-label">Teams</div><div class="kpi-val">${c.teams.length}</div><div class="kpi-sub">in this cluster</div></div>
+        <div class="kpi"><div class="kpi-label">Best Theme</div><div class="kpi-val" style="color:#16a34a">${Math.max(...c.themes.map(t=>t.score)).toFixed(2)}</div><div class="kpi-sub">${c.themes.reduce((a,b)=>b.score>a.score?b:a).name.split(" ").slice(0,2).join(" ")}</div></div>
+        <div class="kpi"><div class="kpi-label">Weakest Theme</div><div class="kpi-val" style="color:#dc2626">${Math.min(...c.themes.map(t=>t.score)).toFixed(2)}</div><div class="kpi-sub">${c.themes.reduce((a,b)=>b.score<a.score?b:a).name.split(" ").slice(0,2).join(" ")}</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Theme Breakdown</div>
+      <div class="section-sub">Performance across 4 assessment dimensions</div>
+      <div class="theme-grid">
+        ${c.themes.map(t=>themeCard({...t,icon:["🏆","🚀","⚙️","💎"][c.themes.indexOf(t)]})).join("")}
+      </div>
+    </div>
+
+    <div class="charts-2col">
+      <div class="chart-wrap"><div class="chart-title">Cluster vs. Hub Average (Themes)</div><div class="chart-inner"><canvas id="clusterThemeChart"></canvas></div></div>
+      <div class="chart-wrap"><div class="chart-title">Attribute Performance</div><div class="chart-inner"><canvas id="clusterAttrChart"></canvas></div></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Teams in ${c.name}</div>
+      <div class="section-sub">Click a team to view detailed assessment</div>
+      ${renderTeamCardsForCluster(c, teamsInCluster)}
+    </div>
+
+    <div class="section">
+      <div class="section-title">Attribute Scorecard</div>
+      <div class="section-sub">9 parameters for ${c.name} · L3 threshold at 2.5</div>
+      ${renderAttrList(c.attributes)}
+    </div>
+
+    <div class="insight-grid">
+      <div class="ins-card crit">
+        <h3 class="cr">🔴 Critical Focus Areas</h3>
+        <ul>${c.attributes.filter(a=>a.critical).map(a=>`<li>${a.name} — Score: ${a.score} (${a.subLabel})</li>`).join("")}</ul>
+      </div>
+      <div class="ins-card">
+        <h3>💪 Strengths</h3>
+        <ul>${[...c.attributes].sort((a,b)=>b.score-a.score).slice(0,3).map(a=>`<li>${a.name} — Score: ${a.score} (${a.subLabel})</li>`).join("")}</ul>
+      </div>
+    </div>
+
+    <div class="action-card">
+      <h3>Recommended Action Plan for ${c.name}</h3>
+      <ul class="action-list">${c.actionItems.map(a=>`<li>${a}</li>`).join("")}</ul>
+    </div>
+
+    <div class="insight-box" style="margin-top:16px">
+      <p><strong>Cluster Insight:</strong> ${c.insight}</p>
+    </div>
+  `;
+}
+
+function renderTeamCardsForCluster(cluster, teamsList){
+  if(teamsList.length === 0){
+    return `<div class="cards-grid"><div class="card" style="cursor:default"><p style="color:var(--light)">No team-level data available for this cluster.</p></div></div>`;
+  }
+  return `<div class="cards-grid">${teamsList.map(t=>`
+    <div class="card drill" onclick="nav_team('${t.id}')">
+      <div class="card-top">
+        <div>
+          <div class="card-name">${t.name}</div>
+          <div class="card-meta">Owner: ${t.owner} · ${t.date}</div>
+        </div>
+        <div class="card-score-block">
+          <div class="cscore" style="color:${scoreColor(t.score)}">${t.score.toFixed(2)}</div>
+          <span class="clv ${lvClass(t.level)}">${t.level}</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div style="font-size:12px;color:var(--mid);display:flex;justify-content:space-between;align-items:center">
+        <span>${t.parameters.filter(p=>p.critical).length > 0 ? '🔴 '+t.parameters.filter(p=>p.critical).length+' critical param'+(t.parameters.filter(p=>p.critical).length>1?'s':'') : '✅ No critical gaps'}</span>
+        <span style="color:var(--accent);font-weight:700">View details →</span>
+      </div>
+    </div>
+  `).join("")}</div>`;
+}
+
+// ─── TEAM VIEW ────────────────────────────────────────────────────────
+function renderTeam(){
+  const t = DATA.teams[state.teamId];
+  if(!t) return "<p>Team not found</p>";
+  const critParams = t.parameters.filter(p=>p.critical);
+
+  return `
+    <button class="back-btn" onclick="nav_cluster('${t.clusterId}')">← ${t.cluster}</button>
+
+    <div class="detail-hdr">
+      <div class="dhd-info">
+        <h2>${t.name}</h2>
+        <div class="dhd-cluster">Cluster: ${t.cluster}</div>
+        <div class="dhd-meta">
+          <div class="meta-item"><span class="meta-lbl">Shape Owner</span><span class="meta-val">${t.owner}</span></div>
+          <div class="meta-item"><span class="meta-lbl">SGL Name</span><span class="meta-val">${t.sgl}</span></div>
+          <div class="meta-item"><span class="meta-lbl">Assessment Date</span><span class="meta-val">${t.date}</span></div>
+        </div>
+      </div>
+      <div class="dhd-score">
+        <div class="dhd-num" style="color:${scoreColor(t.score)}">${t.score.toFixed(2)}</div>
+        <div style="font-size:12px;color:var(--light);margin-bottom:8px">Overall Score</div>
+        <span class="dhd-level-label ${lvClass(t.level)}">${t.level} · ${t.label}</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Theme Scores</div>
+      <div class="theme-grid">
+        ${t.themes.map((th,i)=>themeCard({...th,icon:["🏆","🚀","⚙️","💎"][i]})).join("")}
+      </div>
+    </div>
+
+    <div class="charts-2col">
+      <div class="chart-wrap"><div class="chart-title">Parameter Radar — ${t.name}</div><div class="chart-inner"><canvas id="teamRadarChart"></canvas></div></div>
+      <div class="chart-wrap"><div class="chart-title">Score vs. L3 Target (2.5)</div><div class="chart-inner"><canvas id="teamBarChart"></canvas></div></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Detailed Assessment — All 9 Parameters</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Theme</th><th>Parameter</th><th>KPI Measured</th><th>Score</th><th>Level</th></tr></thead>
+          <tbody>${t.parameters.map(p=>`
+            <tr style="${p.critical?"background:rgba(220,38,38,.03)":""}">
+              <td style="font-size:12px;color:var(--light)">${p.theme}</td>
+              <td><strong>${p.name}${p.critical?" 🔴":""}</strong></td>
+              <td style="font-size:12px;color:var(--light)">${p.kpi}</td>
+              <td style="font-weight:700;color:${scoreColor(p.score)}">${p.score}</td>
+              <td><span class="lv-badge ${lvClass(p.level)}">${p.level} · ${p.subLabel}</span></td>
+            </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="insight-grid">
+      <div class="ins-card crit">
+        <h3 class="cr">🔴 Critical Actions — AI Savviness (Score: ${t.actionPlan.ai.score})</h3>
+        <div style="font-size:12px;color:var(--mid);margin-bottom:10px;line-height:1.5">${t.actionPlan.ai.rootCause}</div>
+        <ul>${t.actionPlan.ai.actions.map(a=>`<li>${a}</li>`).join("")}</ul>
+      </div>
+      <div class="ins-card crit">
+        <h3 class="cr">🔴 Critical Actions — Cost Stewardship (Score: ${t.actionPlan.cost.score})</h3>
+        <div style="font-size:12px;color:var(--mid);margin-bottom:10px;line-height:1.5">${t.actionPlan.cost.rootCause}</div>
+        <ul>${t.actionPlan.cost.actions.map(a=>`<li>${a}</li>`).join("")}</ul>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <p><strong>Team Insight:</strong> ${t.insight}</p>
+      <p style="margin-top:8px;font-size:12px;color:var(--light)">Gap to L3 (2.5): ${(2.5 - t.score).toFixed(2)} points. Priority: bring AI Savviness and Cost Stewardship from L1 to L2+.</p>
+    </div>
+  `;
+}
+
+// ─── CHARTS ──────────────────────────────────────────────────────────
+function destroyCharts(){
+  Object.values(charts).forEach(c=>c.destroy());
+  charts={};
+}
+
+function renderCharts(){
+  if(state.level==="hub"){
+    renderClusterBarChart();
+    renderHubRadarChart();
+  } else if(state.level==="cluster"){
+    renderClusterThemeChart();
+    renderClusterAttrChart();
+  } else {
+    renderTeamRadarChart();
+    renderTeamBarChart();
+  }
+}
+
+const CHART_DEFAULTS = {
+  animation:{ duration:700 },
+  plugins:{ legend:{ display:false }, tooltip:{ bodyFont:{size:12} } },
+  scales:{
+    r:{ min:0, max:4, ticks:{stepSize:1,font:{size:10},color:"#718096",backdropColor:"transparent"}, grid:{color:"rgba(0,0,0,.06)"}, pointLabels:{font:{size:10},color:"#4a5568"} }
+  }
+};
+
+function renderClusterBarChart(){
+  const el = document.getElementById("clusterBarChart");
+  if(!el) return;
+  const ctx = el.getContext("2d");
+  const labels = DATA.clusters.map(c=>c.name.replace(" Cluster",""));
+  const scores = DATA.clusters.map(c=>c.score);
+  const colors = DATA.clusters.map(c=>`rgba(${c.colorHex},.8)`);
+  charts.clusterBar = new Chart(ctx,{
+    type:"bar",
+    data:{ labels, datasets:[{
+      data:scores, backgroundColor:colors, borderRadius:6,
+      borderColor:DATA.clusters.map(c=>`rgba(${c.colorHex},1)`), borderWidth:2
+    },{
+      data:labels.map(()=>2.5), type:"line", label:"L3 Target",
+      borderColor:"rgba(22,163,74,.5)", borderDash:[5,4], borderWidth:2,
+      pointRadius:0, fill:false
+    }]},
+    options:{
+      animation:{duration:700},
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:v=>`Score: ${v.formattedValue}`}} },
+      scales:{
+        y:{min:0,max:3,ticks:{stepSize:.5,font:{size:10}},grid:{color:"rgba(0,0,0,.04)"}},
+        x:{ticks:{font:{size:10}},grid:{display:false}}
+      }
+    }
+  });
+}
+
+function renderHubRadarChart(){
+  const el = document.getElementById("hubRadarChart");
+  if(!el) return;
+  const ctx = el.getContext("2d");
+  const attrs = DATA.hub.attributes;
+  const labels = attrs.map(a=>a.name.length>18?a.name.substring(0,16)+"…":a.name);
+  charts.hubRadar = new Chart(ctx,{
+    type:"radar",
+    data:{ labels, datasets:[{
+      label:"Hub Score", data:attrs.map(a=>a.score),
+      backgroundColor:"rgba(200,16,46,.12)", borderColor:"rgba(200,16,46,.7)",
+      pointBackgroundColor:"rgba(200,16,46,.8)", borderWidth:2, pointRadius:4
+    },{
+      label:"L3 Target", data:attrs.map(()=>2.5),
+      backgroundColor:"rgba(22,163,74,.05)", borderColor:"rgba(22,163,74,.4)",
+      borderDash:[4,3], borderWidth:1.5, pointRadius:0
+    }]},
+    options:{...CHART_DEFAULTS, plugins:{legend:{display:true,position:"bottom",labels:{font:{size:10},boxWidth:12}}}}
+  });
+}
+
+function renderClusterThemeChart(){
+  const el = document.getElementById("clusterThemeChart");
+  if(!el) return;
+  const ctx = el.getContext("2d");
+  const c = DATA.clusters.find(x=>x.id===state.clusterId);
+  const hubThemes = DATA.hub.themes;
+  const labels = c.themes.map(t=>t.name.split(" ").slice(0,2).join(" "));
+  charts.clusterTheme = new Chart(ctx,{
+    type:"bar",
+    data:{ labels, datasets:[
+      { label:"Cluster", data:c.themes.map(t=>t.score), backgroundColor:"rgba(200,16,46,.75)", borderRadius:5, borderWidth:0 },
+      { label:"Hub Avg", data:hubThemes.map(t=>t.score), backgroundColor:"rgba(13,31,60,.25)", borderRadius:5, borderWidth:0 }
+    ]},
+    options:{
+      animation:{duration:700},
+      plugins:{legend:{display:true,position:"bottom",labels:{font:{size:10},boxWidth:12}}},
+      scales:{
+        y:{min:0,max:3,ticks:{stepSize:.5,font:{size:10}},grid:{color:"rgba(0,0,0,.04)"}},
+        x:{ticks:{font:{size:10}},grid:{display:false}}
+      }
+    }
+  });
+}
+
+function renderClusterAttrChart(){
+  const el = document.getElementById("clusterAttrChart");
+  if(!el) return;
+  const ctx = el.getContext("2d");
+  const c = DATA.clusters.find(x=>x.id===state.clusterId);
+  const sorted = [...c.attributes].sort((a,b)=>b.score-a.score);
+  charts.clusterAttr = new Chart(ctx,{
+    type:"bar",
+    data:{ labels:sorted.map(a=>a.name.split(" ").slice(0,2).join(" ")), datasets:[{
+      data:sorted.map(a=>a.score),
+      backgroundColor:sorted.map(a=>a.critical?"rgba(220,38,38,.75)":"rgba(217,119,6,.7)"),
+      borderRadius:5, borderWidth:0
+    },{
+      data:sorted.map(()=>2.5), type:"line", borderColor:"rgba(22,163,74,.5)",
+      borderDash:[5,4], borderWidth:2, pointRadius:0, fill:false
+    }]},
+    options:{
+      indexAxis:"y",
+      animation:{duration:700},
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{min:0,max:4,ticks:{stepSize:.5,font:{size:10}},grid:{color:"rgba(0,0,0,.04)"}},
+        y:{ticks:{font:{size:10}},grid:{display:false}}
+      }
+    }
+  });
+}
+
+function renderTeamRadarChart(){
+  const el = document.getElementById("teamRadarChart");
+  if(!el) return;
+  const ctx = el.getContext("2d");
+  const t = DATA.teams[state.teamId];
+  const labels = t.parameters.map(p=>p.name.split(" ").slice(0,2).join(" "));
+  charts.teamRadar = new Chart(ctx,{
+    type:"radar",
+    data:{ labels, datasets:[{
+      label:t.name, data:t.parameters.map(p=>p.score),
+      backgroundColor:"rgba(200,16,46,.12)", borderColor:"rgba(200,16,46,.7)",
+      pointBackgroundColor:"rgba(200,16,46,.8)", borderWidth:2, pointRadius:4
+    },{
+      label:"L3 Target (2.5)", data:t.parameters.map(()=>2.5),
+      backgroundColor:"rgba(22,163,74,.05)", borderColor:"rgba(22,163,74,.4)",
+      borderDash:[4,3], borderWidth:1.5, pointRadius:0
+    }]},
+    options:{...CHART_DEFAULTS, plugins:{legend:{display:true,position:"bottom",labels:{font:{size:10},boxWidth:12}}}}
+  });
+}
+
+function renderTeamBarChart(){
+  const el = document.getElementById("teamBarChart");
+  if(!el) return;
+  const ctx = el.getContext("2d");
+  const t = DATA.teams[state.teamId];
+  const sorted = [...t.parameters].sort((a,b)=>b.score-a.score);
+  charts.teamBar = new Chart(ctx,{
+    type:"bar",
+    data:{ labels:sorted.map(p=>p.name.split(" ").slice(0,2).join(" ")), datasets:[{
+      data:sorted.map(p=>p.score),
+      backgroundColor:sorted.map(p=>p.critical?"rgba(220,38,38,.8)":"rgba(13,31,60,.7)"),
+      borderRadius:5, borderWidth:0
+    },{
+      data:sorted.map(()=>2.5), type:"line", borderColor:"rgba(22,163,74,.5)",
+      borderDash:[5,4], borderWidth:2, pointRadius:0, fill:false
+    }]},
+    options:{
+      indexAxis:"y",
+      animation:{duration:700},
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{min:0,max:4,ticks:{stepSize:.5,font:{size:10}},grid:{color:"rgba(0,0,0,.04)"}},
+        y:{ticks:{font:{size:10}},grid:{display:false}}
+      }
+    }
+  });
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
