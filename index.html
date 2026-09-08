@@ -220,7 +220,7 @@ const DATA = {
     {
       id:"appliance", name:"Appliance Cluster", color:"#0f172a", colorHex:"15,23,42",
       score:1.73, level:"L2", label:"Capability Hub",
-      teams:["Connectivity Platform","Extended Services","PLM (1)","Home Appliances Services"],
+      teams:["Connectivity Platform","Extended Services","PLM","Home Appliances Services"],
       insight:"AI Savviness & Cost Stewardship consistently low. Leadership & Talent shows strength, particularly Talent Competitiveness.",
       themes:[
         { name:"Leadership & Talent Flywheel", score:2.05 },
@@ -431,12 +431,12 @@ const DATA = {
   ],
   // Lookup: team id → cluster id, used in renderCluster
   clusterTeams: {
-    appliance: ["connectivity-platform","extended-services","plm-1","home-appliances-services"],
+    appliance: ["connectivity-platform","extended-services","plm","home-appliances-services"],
     consumer: ["b2c-marketing","d2c","rsc","service-management"],
     dataai: ["master-data"],
-    dps: ["xaas","rem","cross-user","platform-services"],
+    dps: ["xaas","rem","cross", "user","platform-services"],
     enterprise: ["glo","procurement","finance","b2b-presales","global-logistics"],
-    industry: ["digital-factory","factory-logistics","industrial-operations","industry-innovation"],
+    industry: ["digital-factory","factory-logistics","dscp"],
     ds: ["dsre"]
   },
   teams: {
@@ -481,7 +481,7 @@ const DATA = {
 
     "extended-services": {
       id:"extended-services", name:"Extended Services", cluster:"Appliance Cluster", clusterId:"appliance",
-      owner:"Michael Bauer", sgl:"Gangadhar Kalapaneni", date:"04.08.2026",
+      owner:"Sabine Thaler", sgl:"Curie Kumar", date:"04.08.2026",
       score:1.67, level:"L2", label:"Capability Hub",
       insight:"Extended Services has reliable execution with growing ownership. AI adoption and cost discipline are the primary levers for reaching L3. Technical skills are developing well.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.0},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:1.0},{name:"Strategic Value Creation",score:1.5}],
@@ -504,11 +504,11 @@ const DATA = {
       }
     },
 
-    "plm-1": {
-      id:"plm-1", name:"PLM (1)", cluster:"Appliance Cluster", clusterId:"appliance",
-      owner:"Stefan Gruber", sgl:"Gangadhar Kalapaneni", date:"04.08.2026",
+    "plm": {
+      id:"plm", name:"PLM", cluster:"Appliance Cluster", clusterId:"appliance",
+      owner:"Frank Helmke", sgl:"Ramyakavya Thumcharla", date:"04.08.2026",
       score:1.56, level:"L2", label:"Capability Hub",
-      insight:"PLM (1) shows strong talent competitiveness but requires focused investment in AI adoption and global ownership mindset to advance to L3. JRA mix needs modernization.",
+      insight:"PLM shows strong talent competitiveness but requires focused investment in AI adoption and global ownership mindset to advance to L3. JRA mix needs modernization.",
       themes:[{name:"Leadership & Talent Flywheel",score:1.67},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:1.0},{name:"Strategic Value Creation",score:1.5}],
       parameters:[
         {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
@@ -531,7 +531,7 @@ const DATA = {
 
     "home-appliances-services": {
       id:"home-appliances-services", name:"Home Appliances Services", cluster:"Appliance Cluster", clusterId:"appliance",
-      owner:"Laura Fischer", sgl:"Gangadhar Kalapaneni", date:"04.08.2026",
+      owner:"Markus Moser", sgl:"Curie Kumar", date:"04.08.2026",
       score:1.78, level:"L2", label:"Capability Hub",
       insight:"Home Appliances Services is the strongest team in the Appliance cluster. Talent Competitiveness at L3 is a key differentiator. Moving to full module ownership and AI adoption are next priorities.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:1.5}],
@@ -556,7 +556,7 @@ const DATA = {
 
     "b2c-marketing": {
       id:"b2c-marketing", name:"B2C Marketing & Analytics", cluster:"Consumer Cluster", clusterId:"consumer",
-      owner:"Sarah Hofer", sgl:"Consumer Hub Lead", date:"04.08.2026",
+      owner:"Marco Wolter", sgl:"Kiran Purushothaman", date:"04.08.2026",
       score:1.56, level:"L2", label:"Capability Hub",
       insight:"B2C Marketing & Analytics has strong data analytics foundations but must build formal AI adoption frameworks and tighten financial ownership to reach L3.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.0},{name:"Capability Development",score:1.33},{name:"Organizational Effectiveness",score:1.0},{name:"Strategic Value Creation",score:1.5}],
@@ -578,10 +578,10 @@ const DATA = {
           actions:["Implement channel-level ROI tracking dashboard","Require ROI forecast for all campaigns >€10k","Shift KPIs from 'budget spent' to 'revenue attributed per euro spent'","Review top 3 cost centers quarterly and identify 10% efficiency target"]}
       }
     },
-
+x
     "d2c": {
       id:"d2c", name:"D2C", cluster:"Consumer Cluster", clusterId:"consumer",
-      owner:"Jonas Weber", sgl:"Consumer Hub Lead", date:"04.08.2026",
+      owner:"Daniel Correns", sgl:"Trupti Deshmukh, Kushal Jain, Ajith Kanipayyur", date:"04.08.2026",
       score:1.44, level:"L1", label:"Execution Hub",
       insight:"D2C team executes well but operates reactively. Ownership mindset, AI capability, and cost discipline need foundational investment for L2 advancement.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.0},{name:"Capability Development",score:1.33},{name:"Organizational Effectiveness",score:1.0},{name:"Strategic Value Creation",score:1.0}],
@@ -606,7 +606,7 @@ const DATA = {
 
     "rsc": {
       id:"rsc", name:"RSC", cluster:"Consumer Cluster", clusterId:"consumer",
-      owner:"Nina Müller", sgl:"Consumer Hub Lead", date:"04.08.2026",
+      owner:"Hong Lien Vo", sgl:"Ashis Kumar Saha", date:"04.08.2026",
       score:1.44, level:"L1", label:"Execution Hub",
       insight:"RSC operates as a reliable execution unit. Strategic value creation and AI adoption require priority investment. Building ownership mindset is the foundational next step.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.0},{name:"Capability Development",score:1.33},{name:"Organizational Effectiveness",score:1.0},{name:"Strategic Value Creation",score:1.0}],
@@ -631,7 +631,7 @@ const DATA = {
 
     "service-management": {
       id:"service-management", name:"Service Management", cluster:"Consumer Cluster", clusterId:"consumer",
-      owner:"Thomas Lehner", sgl:"Consumer Hub Lead", date:"04.08.2026",
+      owner:"Martin Klockau", sgl:"Suraj Nair", date:"04.08.2026",
       score:1.56, level:"L2", label:"Capability Hub",
       insight:"Service Management is the strongest team in Consumer cluster. Structured innovation programs are in place; AI and cost leadership are next development priorities.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.0},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:1.0},{name:"Strategic Value Creation",score:1.0}],
@@ -656,7 +656,7 @@ const DATA = {
 
     "master-data": {
       id:"master-data", name:"Master Data", cluster:"Data & AI Cluster", clusterId:"dataai",
-      owner:"Priya Sharma", sgl:"Data & AI Hub Lead", date:"04.08.2026",
+      owner:"Ulrich Lutz", sgl:"Silky Verma & Priyanka Vasanthkumar", date:"04.08.2026",
       score:1.89, level:"L2", label:"Capability Hub",
       insight:"Master Data has strong technical depth and talent retention. As the data foundation for hub-wide AI initiatives, elevating AI and innovation processes here has multiplier effect across all clusters.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:1.5}],
@@ -681,7 +681,7 @@ const DATA = {
 
     "xaas": {
       id:"xaas", name:"XAAS", cluster:"DPS Cluster", clusterId:"dps",
-      owner:"Andreas Kramer", sgl:"DPS Hub Lead", date:"04.08.2026",
+      owner:"Muhammed Ali Ercan", sgl:"Jyotirmay Bhargab", date:"04.08.2026",
       score:1.89, level:"L2", label:"Capability Hub",
       insight:"XAAS leads the DPS cluster in platform service delivery. Strong talent competitiveness and structured innovation. AI-as-a-service capability and cost modeling are key next steps.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:1.5}],
@@ -706,7 +706,7 @@ const DATA = {
 
     "rem": {
       id:"rem", name:"REM", cluster:"DPS Cluster", clusterId:"dps",
-      owner:"Claudia Becker", sgl:"DPS Hub Lead", date:"04.08.2026",
+      owner:"Beste Guren Muminoglu", sgl:"Sai Kumar", date:"04.08.2026",
       score:1.78, level:"L2", label:"Capability Hub",
       insight:"REM has solid execution and growing ownership capability. Investment in AI tooling and financial acumen will differentiate REM as a strategic platform partner.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.0},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:1.5}],
@@ -729,11 +729,11 @@ const DATA = {
       }
     },
 
-    "cross-user": {
-      id:"cross-user", name:"Cross / User", cluster:"DPS Cluster", clusterId:"dps",
-      owner:"Felix Richter", sgl:"DPS Hub Lead", date:"04.08.2026",
+    "user": {
+      id:"user", name:"User", cluster:"DPS Cluster", clusterId:"dps",
+      owner:"Serhiy Mamus", sgl:"Lokesh Kumar H Shetty", date:"04.08.2026",
       score:1.78, level:"L2", label:"Capability Hub",
-      insight:"Cross / User is a bridge team enabling platform consumption. Ownership of the cross-cutting user experience requires AI and value measurement uplift to reach L3.",
+      insight:"User is a bridge team enabling platform consumption. Ownership of the cross-cutting user experience requires AI and value measurement uplift to reach L3.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.0},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:1.5}],
       parameters:[
         {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
@@ -756,7 +756,7 @@ const DATA = {
 
     "platform-services": {
       id:"platform-services", name:"Platform Services", cluster:"DPS Cluster", clusterId:"dps",
-      owner:"Hannah Wolf", sgl:"DPS Hub Lead", date:"04.08.2026",
+      owner:"Marc Schmidt", sgl:"Arshad Havaldar", date:"04.08.2026",
       score:1.89, level:"L2", label:"Capability Hub",
       insight:"Platform Services anchors DPS with strong technical depth. Productizing AI capabilities and maturing financial ownership will unlock the transition from platform provider to strategic platform partner.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:1.5}],
@@ -781,7 +781,7 @@ const DATA = {
 
     "glo": {
       id:"glo", name:"GLO", cluster:"Enterprise Cluster", clusterId:"enterprise",
-      owner:"Markus Hoffmann", sgl:"Enterprise Hub Lead", date:"04.08.2026",
+      owner:"Rene Stuewe", sgl:"Rabindranath Indi", date:"04.08.2026",
       score:2.11, level:"L2", label:"Capability Hub (High)",
       insight:"GLO is one of the Hub's strongest teams. Proactive ownership and measurable value creation are well established. AI is the critical final barrier to L3 designation.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.67},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:2.0}],
@@ -806,7 +806,7 @@ const DATA = {
 
     "procurement": {
       id:"procurement", name:"Procurement", cluster:"Enterprise Cluster", clusterId:"enterprise",
-      owner:"Elena Braun", sgl:"Enterprise Hub Lead", date:"04.08.2026",
+      owner:"Melanie Schnittger", sgl:"Prashanth Karishnthol Basavarajappa", date:"04.08.2026",
       score:2.0, level:"L2", label:"Capability Hub",
       insight:"Procurement shows strong strategic value measurement. Category management and supplier analytics are mature. AI-driven sourcing intelligence is the key next capability.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:2.0}],
@@ -831,7 +831,7 @@ const DATA = {
 
     "finance": {
       id:"finance", name:"Finance", cluster:"Enterprise Cluster", clusterId:"enterprise",
-      owner:"Daniel Koch", sgl:"Enterprise Hub Lead", date:"04.08.2026",
+      owner:"Matthias", sgl:"Ekamber", date:"04.08.2026",
       score:2.11, level:"L2", label:"Capability Hub (High)",
       insight:"Finance team has deep cost stewardship capability and strong pipeline. AI for financial forecasting and automated reporting are the natural next innovation frontier.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:2.5}],
@@ -856,7 +856,7 @@ const DATA = {
 
     "b2b-presales": {
       id:"b2b-presales", name:"B2B Presales & Sales", cluster:"Enterprise Cluster", clusterId:"enterprise",
-      owner:"Sophie Wagner", sgl:"Enterprise Hub Lead", date:"04.08.2026",
+      owner:"Nicole Belouazza", sgl:"Reena M", date:"04.08.2026",
       score:2.11, level:"L2", label:"Capability Hub (High)",
       insight:"B2B Presales & Sales team demonstrates strong ownership and value creation. AI for sales intelligence and cost modeling are the accelerators to reach L3 Strategic Partner.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:2.5}],
@@ -881,7 +881,7 @@ const DATA = {
 
     "global-logistics": {
       id:"global-logistics", name:"Global Logistics", cluster:"Enterprise Cluster", clusterId:"enterprise",
-      owner:"Robert Schäfer", sgl:"Enterprise Hub Lead", date:"04.08.2026",
+      owner:"Rene Stüwe", sgl:"Praveen Sembeti", date:"04.08.2026",
       score:2.0, level:"L2", label:"Capability Hub",
       insight:"Global Logistics shows consistent L2 performance. Digitizing logistics intelligence with AI and shifting to proactive cost stewardship are the priority actions for L3.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:2.0}],
@@ -906,7 +906,7 @@ const DATA = {
 
     "digital-factory": {
       id:"digital-factory", name:"Digital Factory", cluster:"Industry Cluster", clusterId:"industry",
-      owner:"Klaus Berger", sgl:"Industry Hub Lead", date:"04.08.2026",
+      owner:"Klaus Gutkowski", sgl:"Ashoka Basti Narayana, Karam Dharmananda Singh, Abhijeet Kumar", date:"04.08.2026",
       score:2.11, level:"L2", label:"Capability Hub (High)",
       insight:"Digital Factory is the innovation leader in the Industry cluster. Strong technical depth and scalable innovation. AI for predictive manufacturing and cost optimization are the L3 breakthrough areas.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:2.33},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:1.5}],
@@ -931,7 +931,7 @@ const DATA = {
 
     "factory-logistics": {
       id:"factory-logistics", name:"Factory Logistics", cluster:"Industry Cluster", clusterId:"industry",
-      owner:"Petra Müller", sgl:"Industry Hub Lead", date:"04.08.2026",
+      owner:"Thomas Posner", sgl:"Sravanthi Abbu", date:"04.08.2026",
       score:1.89, level:"L2", label:"Capability Hub",
       insight:"Factory Logistics has solid execution and growing technical ownership. Implementing AI for logistics optimization and tightening cost-value linkage are priority actions.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:1.5}],
@@ -954,9 +954,9 @@ const DATA = {
       }
     },
 
-    "industrial-operations": {
-      id:"industrial-operations", name:"Industrial Operations", cluster:"Industry Cluster", clusterId:"industry",
-      owner:"Tobias Schwarz", sgl:"Industry Hub Lead", date:"04.08.2026",
+    "dscp": {
+      id:"dscp", name:"Digital Supply Chain Planning", cluster:"Industry Cluster", clusterId:"industry",
+      owner:"Gerhard Peichel", sgl:"Ziauddin Shaik", date:"04.08.2026",
       score:1.89, level:"L2", label:"Capability Hub",
       insight:"Industrial Operations is a reliable L2 team with growing ownership. Scaling AI for operational intelligence and building financial discipline are the key investment areas.",
       themes:[{name:"Leadership & Talent Flywheel",score:2.0},{name:"Capability Development",score:1.67},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:1.5}],
@@ -979,34 +979,9 @@ const DATA = {
       }
     },
 
-    "industry-innovation": {
-      id:"industry-innovation", name:"Industry Innovation", cluster:"Industry Cluster", clusterId:"industry",
-      owner:"Carla Braun", sgl:"Industry Hub Lead", date:"04.08.2026",
-      score:2.11, level:"L2", label:"Capability Hub (High)",
-      insight:"Industry Innovation team demonstrates the strongest AI exploration in the Industry cluster. Formalizing the AI pipeline and financial discipline will unlock L3.",
-      themes:[{name:"Leadership & Talent Flywheel",score:2.33},{name:"Capability Development",score:2.0},{name:"Organizational Effectiveness",score:2.0},{name:"Strategic Value Creation",score:2.0}],
-      parameters:[
-        {theme:"Leadership & Talent Flywheel",name:"Leadership Pipeline & Succession",kpi:"% of critical roles with ready-now successor",score:2,level:"L2",subLabel:"Early Pipeline"},
-        {theme:"Leadership & Talent Flywheel",name:"Talent Competitiveness Index",kpi:"Offer acceptance rate & top performer attrition",score:3,level:"L3",subLabel:"Talent Destination"},
-        {theme:"Leadership & Talent Flywheel",name:"JRA Intensity & Future Digital",kpi:"% of workforce in Niche/Strategic roles",score:2,level:"L2",subLabel:"Specialized Mix"},
-        {theme:"Capability Development",name:"AI Savviness & AI Leadership",kpi:"AI project portfolio and team composition",score:2,level:"L2",subLabel:"AI Explorer"},
-        {theme:"Capability Development",name:"Scalable Innovation",kpi:"PoC-to-production conversion rate",score:2,level:"L2",subLabel:"Structured Programs"},
-        {theme:"Capability Development",name:"Technical & Functional Depth",kpi:"Contribution to solution architecture",score:2,level:"L2",subLabel:"Specialized Skills"},
-        {theme:"Organizational Effectiveness",name:"End-to-End Global Ownership",kpi:"Locus of decision-making",score:2,level:"L2",subLabel:"Module Ownership"},
-        {theme:"Strategic Value Creation",name:"Enterprise Value Creation",kpi:"Business impact measurement",score:2,level:"L2",subLabel:"Productivity Gain"},
-        {theme:"Strategic Value Creation",name:"Cost Stewardship",kpi:"Approach to cost management",score:2,level:"L2",subLabel:"Cost-Aware"}
-      ],
-      actionPlan:{
-        ai:{title:"Scaling AI Innovation",score:2,rootCause:"Good AI exploration exists but a systematic innovation pipeline from ideation to scaled production is not yet operational.",
-          actions:["Establish formal Innovation Funnel with stage-gate criteria from idea to production","Mandate PoC Charter with business hypothesis and success metrics for every pilot","Dedicate 20% of sprint capacity to AI innovation sprints","Build innovation KPI dashboard: ideas submitted, PoCs running, scaled solutions","Host quarterly Industry cluster Innovation Showcase"]},
-        cost:{title:"Improving Cost Stewardship",score:2,rootCause:"Innovation investments are made but ROI is not systematically measured post-deployment.",
-          actions:["Introduce innovation ROI tracking 6-months post-deployment for every scaled solution","Build innovation investment portfolio dashboard","Balance innovation portfolio between quick wins and transformative bets","Share innovation ROI results with Hub leadership quarterly"]}
-      }
-    },
-
     "dsre": {
       id:"dsre", name:"DSRE", cluster:"DS (Digital Security) Cluster", clusterId:"ds",
-      owner:"Martin Schreiber", sgl:"DS Hub Lead", date:"04.08.2026",
+      owner:"Martin Schreiber", sgl:"", date:"04.08.2026",
       score:1.44, level:"L1", label:"Execution Hub",
       insight:"DSRE operates in a foundational L1 state. Security excellence is a strength but must be complemented by AI capability, strategic ownership, and financial discipline. A structured 6-month uplift plan is recommended.",
       themes:[{name:"Leadership & Talent Flywheel",score:1.67},{name:"Capability Development",score:1.33},{name:"Organizational Effectiveness",score:1.0},{name:"Strategic Value Creation",score:1.0}],
