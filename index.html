@@ -1,6 +1,3 @@
-Here is the complete, self-contained file:
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -197,7 +194,7 @@ button:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}
     </div>
     <div class="tb-sep"></div>
     <nav class="bc" id="bc-nav"><span class="bc-cur">Hub Overview</span></nav>
-    <div class="tb-pill">Hub: <strong>1.87/4</strong> · L2 · 30 Teams</div>
+    <div class="tb-pill" id="hub-pill">Hub: <strong>--</strong></div>
   </div>
 </header>
 
@@ -256,7 +253,7 @@ button:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}
       <rect x="908" y="473" width="167" height="22" rx="3" fill="#f97316"/>
       <text x="991" y="488" text-anchor="middle" font-size="10" font-weight="800" fill="#fff" font-family="Segoe UI,sans-serif">Transformation Engine</text>
       <!-- S-CURVE -->
-      <path d="M75,422 C150,418 195,408 241,400 C295,390 348,372 408,356 C465,342 530,318 575,300 C625,280 685,258 741,238 C800,218 858,200 908,188 C952,178 1012,166 1075,157"
+      <path id="maturity-curve-path" d="M75,422 C150,418 195,408 241,400 C295,390 348,372 408,356 C465,342 530,318 575,300 C625,280 685,258 741,238 C800,218 858,200 908,188 C952,178 1012,166 1075,157"
         fill="none" stroke="#1e293b" stroke-width="3.5" stroke-linecap="round"/>
       <!-- 2027-28 Target -->
       <circle cx="741" cy="238" r="28" fill="rgba(22,163,74,.12)" stroke="#16a34a" stroke-width="2.5"/>
@@ -267,83 +264,8 @@ button:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}
       <rect x="812" y="212" width="118" height="46" rx="9" fill="#16a34a" filter="url(#ds)"/>
       <text x="871" y="232" text-anchor="middle" font-size="18" font-weight="900" fill="white" font-family="Segoe UI,sans-serif">2027-28</text>
       <text x="871" y="249" text-anchor="middle" font-size="9.5" fill="rgba(255,255,255,.8)" font-family="Segoe UI,sans-serif">Target: L3 Strategic Partner</text>
-      <!-- Connector lines (behind nodes) -->
-      <g opacity=".65" style="pointer-events:none">
-        <line x1="212" y1="406" x2="138" y2="419" stroke="#dc2626" stroke-width="1.2" stroke-dasharray="5,3"/>
-        <line x1="251" y1="398" x2="192" y2="357" stroke="#7c3aed" stroke-width="1.2" stroke-dasharray="5,3"/>
-        <line x1="335" y1="375" x2="307" y2="418" stroke="#1d4ed8" stroke-width="1.2" stroke-dasharray="5,3"/>
-        <line x1="365" y1="367" x2="330" y2="303" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="5,3"/>
-        <line x1="385" y1="361" x2="404" y2="203" stroke="#0369a1" stroke-width="1.2" stroke-dasharray="5,3"/>
-        <line x1="375" y1="364" x2="420" y2="418" stroke="#0284c7" stroke-width="1.2" stroke-dasharray="5,3"/>
-        <line x1="411" y1="354" x2="488" y2="264" stroke="#0f766e" stroke-width="1.2" stroke-dasharray="5,3"/>
-        <line x1="427" y1="349" x2="546" y2="418" stroke="#ea580c" stroke-width="1.2" stroke-dasharray="5,3"/>
-      </g>
-      <!-- DS node -->
-      <g class="cnode" onclick="showCluster('ds')" tabindex="0" role="button" aria-label="DS cluster 1.40 L1" onkeydown="if(event.key==='Enter')showCluster('ds')">
-        <circle cx="212" cy="406" r="22" fill="rgba(220,38,38,.15)" class="nring"/>
-        <circle cx="212" cy="406" r="10" fill="#dc2626" stroke="white" stroke-width="2.5"/>
-        <rect x="92" y="409" width="92" height="42" rx="7" fill="#dc2626" filter="url(#ds)"/>
-        <text x="138" y="427" text-anchor="middle" font-size="12" font-weight="800" fill="white" font-family="Segoe UI,sans-serif">DS</text>
-        <text x="138" y="442" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,.85)" font-family="Segoe UI,sans-serif">1.40 · L1</text>
-      </g>
-      <!-- Consumer node -->
-      <g class="cnode" onclick="showCluster('consumer')" tabindex="0" role="button" aria-label="Consumer 1.53 L2" onkeydown="if(event.key==='Enter')showCluster('consumer')">
-        <circle cx="251" cy="398" r="22" fill="rgba(124,58,237,.15)" class="nring"/>
-        <circle cx="251" cy="398" r="10" fill="#7c3aed" stroke="white" stroke-width="2.5"/>
-        <rect x="88" y="329" width="110" height="44" rx="7" fill="#7c3aed" filter="url(#ds)"/>
-        <text x="143" y="347" text-anchor="middle" font-size="12" font-weight="800" fill="white" font-family="Segoe UI,sans-serif">Consumer</text>
-        <text x="143" y="362" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,.85)" font-family="Segoe UI,sans-serif">1.53 · L2</text>
-      </g>
-      <!-- Hub Overall node (star) -->
-      <g class="cnode" onclick="showHub()" tabindex="0" role="button" aria-label="Hub Overall 1.87 L2" onkeydown="if(event.key==='Enter')showHub()">
-        <circle cx="365" cy="367" r="25" fill="rgba(22,163,74,.15)" class="nring"/>
-        <circle cx="365" cy="367" r="12" fill="#16a34a" stroke="white" stroke-width="2.5"/>
-        <text x="365" y="372" text-anchor="middle" font-size="12" fill="white" font-weight="900" font-family="Segoe UI,sans-serif">★</text>
-        <rect x="243" y="294" width="148" height="55" rx="8" fill="#16a34a" filter="url(#ds)"/>
-        <text x="317" y="312" text-anchor="middle" font-size="11.5" font-weight="800" fill="white" font-family="Segoe UI,sans-serif">★ Hub Overall</text>
-        <text x="317" y="329" text-anchor="middle" font-size="14" font-weight="900" fill="white" font-family="Segoe UI,sans-serif">1.87 · L2</text>
-        <text x="317" y="342" text-anchor="middle" font-size="9.5" fill="rgba(255,255,255,.7)" font-family="Segoe UI,sans-serif">30 Teams · 7 Clusters</text>
-      </g>
-      <!-- Appliance node -->
-      <g class="cnode" onclick="showCluster('appliance')" tabindex="0" role="button" aria-label="Appliance 1.78 L2" onkeydown="if(event.key==='Enter')showCluster('appliance')">
-        <circle cx="335" cy="375" r="22" fill="rgba(29,78,216,.15)" class="nring"/>
-        <circle cx="335" cy="375" r="10" fill="#1d4ed8" stroke="white" stroke-width="2.5"/>
-        <rect x="249" y="418" width="116" height="42" rx="7" fill="#1d4ed8" filter="url(#ds)"/>
-        <text x="307" y="436" text-anchor="middle" font-size="12" font-weight="800" fill="white" font-family="Segoe UI,sans-serif">Appliance</text>
-        <text x="307" y="451" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,.85)" font-family="Segoe UI,sans-serif">1.78 · L2</text>
-      </g>
-      <!-- DPS node -->
-      <g class="cnode" onclick="showCluster('dps')" tabindex="0" role="button" aria-label="DPS 1.93 L2" onkeydown="if(event.key==='Enter')showCluster('dps')">
-        <circle cx="385" cy="361" r="22" fill="rgba(3,105,161,.15)" class="nring"/>
-        <circle cx="385" cy="361" r="10" fill="#0369a1" stroke="white" stroke-width="2.5"/>
-        <rect x="399" y="189" width="106" height="42" rx="7" fill="#0369a1" filter="url(#ds)"/>
-        <text x="452" y="207" text-anchor="middle" font-size="12" font-weight="800" fill="white" font-family="Segoe UI,sans-serif">DPS</text>
-        <text x="452" y="222" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,.85)" font-family="Segoe UI,sans-serif">1.93 · L2</text>
-      </g>
-      <!-- Data & AI node -->
-      <g class="cnode" onclick="showCluster('data-ai')" tabindex="0" role="button" aria-label="Data and AI 1.90 L2" onkeydown="if(event.key==='Enter')showCluster('data-ai')">
-        <circle cx="375" cy="364" r="22" fill="rgba(2,132,199,.15)" class="nring"/>
-        <circle cx="375" cy="364" r="10" fill="#0284c7" stroke="white" stroke-width="2.5"/>
-        <rect x="401" y="418" width="112" height="42" rx="7" fill="#0284c7" filter="url(#ds)"/>
-        <text x="457" y="436" text-anchor="middle" font-size="12" font-weight="800" fill="white" font-family="Segoe UI,sans-serif">Data &amp; AI</text>
-        <text x="457" y="451" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,.85)" font-family="Segoe UI,sans-serif">1.90 · L2</text>
-      </g>
-      <!-- Enterprise node -->
-      <g class="cnode" onclick="showCluster('enterprise')" tabindex="0" role="button" aria-label="Enterprise 2.01 L2" onkeydown="if(event.key==='Enter')showCluster('enterprise')">
-        <circle cx="411" cy="354" r="22" fill="rgba(15,118,110,.15)" class="nring"/>
-        <circle cx="411" cy="354" r="10" fill="#0f766e" stroke="white" stroke-width="2.5"/>
-        <rect x="484" y="258" width="130" height="42" rx="7" fill="#0f766e" filter="url(#ds)"/>
-        <text x="549" y="276" text-anchor="middle" font-size="12" font-weight="800" fill="white" font-family="Segoe UI,sans-serif">Enterprise</text>
-        <text x="549" y="291" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,.85)" font-family="Segoe UI,sans-serif">2.01 · L2</text>
-      </g>
-      <!-- Industry node -->
-      <g class="cnode" onclick="showCluster('industry')" tabindex="0" role="button" aria-label="Industry 2.06 L2" onkeydown="if(event.key==='Enter')showCluster('industry')">
-        <circle cx="427" cy="349" r="22" fill="rgba(234,88,12,.15)" class="nring"/>
-        <circle cx="427" cy="349" r="10" fill="#ea580c" stroke="white" stroke-width="2.5"/>
-        <rect x="537" y="418" width="108" height="42" rx="7" fill="#ea580c" filter="url(#ds)"/>
-        <text x="591" y="436" text-anchor="middle" font-size="12" font-weight="800" fill="white" font-family="Segoe UI,sans-serif">Industry</text>
-        <text x="591" y="451" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,.85)" font-family="Segoe UI,sans-serif">2.06 · L2</text>
-      </g>
+      <g id="home-connectors" opacity=".65" style="pointer-events:none"></g>
+      <g id="home-nodes"></g>
     </svg>
     <div class="chart-hint"><div class="pulse"></div>Click any cluster label or dot to drill down · 2027-28 Target = L3 Strategic Partner</div>
   </div>
@@ -373,7 +295,7 @@ const wPct = s => ((Math.max(1,Math.min(4,+s))-1)/3*100).toFixed(1)+'%';
 const adj = (h,n) => {let c=h.replace('#','');if(c.length===3)c=c.split('').map(x=>x+x).join('');let r=parseInt(c.slice(0,2),16)+n,g=parseInt(c.slice(2,4),16)+n,b=parseInt(c.slice(4,6),16)+n;return '#'+[r,g,b].map(v=>Math.max(0,Math.min(255,v)).toString(16).padStart(2,'0')).join('');};
 
 // ── DATA ──
-const HUB = {name:'Hub Overall', score:1.87, color:'#16a34a', themes:[2.18,1.65,1.80,1.73], attrs:[2.00,2.20,2.23,1.13,1.70,2.00,1.80,1.83,1.60]};
+const HUB = {name:'Hub Overall', score:0, color:'#16a34a', themes:[], attrs:[]};
 
 const CL = [
   {id:'ds', name:'DS (DSRE)', score:1.40, color:'#dc2626',
@@ -382,20 +304,20 @@ const CL = [
      {name:'DSRE Shape', sgl:'—', owner:'—', score:1.4, themes:[2.0,1.0,1.0,1.5], attrs:[1,3,2,1,1,1,1,1,2]}
    ]},
   {id:'consumer', name:'Consumer', score:1.53, color:'#7c3aed',
-   themes:[2.08,1.25,1.50,1.13], attrs:[1.25,2.50,2.50,1.25,1.00,1.50,1.50,1.25,1.00],
+   themes:[2.2,1.25,1.50,1.13], attrs:[1.25,2.50,2.50,1.25,1.00,1.50,1.50,1.25,1.00],
    shapes:[
      {name:'B2C Marketing & Analytics', sgl:'Kiran Purushothaman', owner:'Marco Wolter', score:1.4, themes:[2.3,1.0,1.0,1.0], attrs:[1,3,3,1,1,1,1,1,1]},
-     {name:'D2C', sgl:'Kushal / Ajith / Trupti', owner:'Daniel', score:1.8, themes:[2.3,1.7,2.0,1.0], attrs:[2,2,3,2,1,2,2,1,1]},
-     {name:'RSC', sgl:'—', owner:'—', score:1.1, themes:[1.7,1.0,1.0,1.0], attrs:[1,3,2,1,1,1,1,1,1]},
-     {name:'Service Management', sgl:'—', owner:'—', score:1.8, themes:[2.3,1.0,2.0,1.5], attrs:[1,2,2,1,1,2,2,2,1]}
+     {name:'D2C', sgl:'Kushal / Ajith / Trupti', owner:'Daniel Correns', score:1.8, themes:[2.3,1.7,2.0,1.0], attrs:[2,2,3,2,1,2,2,1,1]},
+     {name:'RSC', sgl:'Ashis Kumar Saha', owner:'Hong Lien Vo', score:1.2, themes:[2.0,1.0,1.0,1.0], attrs:[1,3,2,1,1,1,1,1,1]},
+     {name:'Service Management', sgl:'Suraj Nair', owner:'Martin Klockau', score:1.8, themes:[2.3,1.0,2.0,1.5], attrs:[1,2,3,1,1,2,2,2,1]}
    ]},
   {id:'appliance', name:'Appliance', score:1.78, color:'#1d4ed8',
    themes:[2.00,1.72,2.00,1.50], attrs:[1.80,2.60,1.60,1.40,1.80,2.00,2.00,1.80,1.20],
    shapes:[
      {name:'Connectivity Platform', sgl:'Gangadhar Kalapaneni', owner:'Anne Steinboeck', score:1.9, themes:[2.3,1.7,2.0,1.5], attrs:[2,3,2,1,2,2,2,2,1]},
      {name:'Extended Services', sgl:'Curie Kumar', owner:'Sabine Thaler', score:1.4, themes:[1.0,1.3,2.0,2.0], attrs:[1,1,1,1,2,1,2,2,2]},
-     {name:'Home Appliances Services', sgl:'—', owner:'—', score:1.4, themes:[1.7,1.0,1.5,1.0], attrs:[1,3,1,1,2,1,1,1,2]},
-     {name:'PLM', sgl:'Ramyakavya Thumcharla', owner:'Frank Helmke', score:2.1, themes:[2.7,2.0,2.3,1.5], attrs:[3,2,2,2,2,3,3,2,1]}
+     {name:'Home Appliances Services', sgl:'Curie Kumar', owner:'Markus Moser', score:1.4, themes:[1.7,1.0,1.0,1.0], attrs:[1,3,1,1,2,1,1,1,1]},
+     {name:'PLM', sgl:'Ramyakavya Thumcharla', owner:'Frank Helmke', score:2.2, themes:[2.7,2.0,2.3,1.5], attrs:[3,3,2,2,2,3,3,2,1]}
    ]},
   {id:'data-ai', name:'Data & AI', score:1.90, color:'#0284c7',
    themes:[2.30,1.30,2.00,2.00], attrs:[2.00,3.00,2.00,1.00,1.00,2.00,2.00,2.00,2.00],
@@ -406,35 +328,67 @@ const CL = [
    themes:[2.06,1.72,1.83,1.88], attrs:[2.00,2.00,2.17,1.00,2.33,2.00,1.83,2.17,1.67],
    shapes:[
      {name:'XAAS', sgl:'Jyotirmay Bhargab', owner:'Muhammed Ali Ercan', score:2.2, themes:[2.3,2.0,2.0,2.5], attrs:[3,2,2,1,3,2,2,3,2]},
-     {name:'REM', sgl:'—', owner:'—', score:1.3, themes:[1.3,1.0,1.0,1.5], attrs:[1,1,1,1,1,2,1,2,1]},
-     {name:'Cross (BSH_GDS-PSCH)', sgl:'Arshad Havaldar', owner:'Marc Schmidt', score:2.0, themes:[2.33,1.60,2.00,1.25], attrs:[2,2,3,1,3,2,2,2,1]},
+     {name:'REM', sgl:'Sai Kumar', owner:'Beste Guren Muminoglu', score:1.2, themes:[1.3,1.0,1.0,1.5], attrs:[1,1,1,1,1,2,1,2,1]},
+     {name:'Cross (BSH_GDS-PSCH)', sgl:'Arshad Havaldar', owner:'Marc Schmidt', score:2.0, themes:[2.3,2.0,2.0,1.5], attrs:[2,2,3,1,3,2,2,2,1]},
      {name:'DPS CROSS (Pranav Bhatt)', sgl:'Pranav Bhatt', owner:'Marc Schmidt', score:2.3, themes:[2.7,1.7,2.0,2.0], attrs:[3,2,3,1,2,2,2,2,2]},
-     {name:'DPS (Unspecified)', sgl:'—', owner:'—', score:1.9, themes:[2.0,1.7,2.0,2.0], attrs:[1,3,2,1,2,2,2,2,2]},
+     {name:'DPS (Unspecified)', sgl:'Pramathesh Gupta', owner:'—', score:1.9, themes:[2.0,1.7,2.0,2.0], attrs:[1,3,2,1,2,2,2,2,2]},
      {name:'DPS User', sgl:'Lokesh Kumar H Shetty', owner:'Serhiy Mamus', score:2.0, themes:[2.0,2.0,2.0,2.0], attrs:[2,2,2,1,3,2,2,2,2]}
    ]},
   {id:'enterprise', name:'Enterprise', score:2.01, color:'#0f766e',
    themes:[2.31,1.87,1.89,1.83], attrs:[2.33,2.11,2.56,1.11,2.11,2.33,1.89,2.00,1.67],
    shapes:[
      {name:'GLO (Jayant Bhati)', sgl:'Jayant Bhati', owner:'Rene Stuewe', score:2.0, themes:[2.3,2.0,2.0,1.5], attrs:[2,2,3,1,2,3,2,2,1]},
-     {name:'GLO (Rabindranath Indi)', sgl:'Rabindranath Indi', owner:'—', score:2.0, themes:[2.3,2.0,2.0,1.5], attrs:[2,2,3,1,2,2,2,2,1]},
+     {name:'GLO (Rabindranath Indi)', sgl:'Rabindranath Indi', owner:'Rene Stuewe', score:2.0, themes:[2.3,2.0,2.0,1.5], attrs:[2,2,3,1,2,2,2,2,1]},
      {name:'Global Logistics Outbound', sgl:'Praveen Sembeti', owner:'Rene Stüwe', score:2.0, themes:[2.3,2.0,2.0,1.5], attrs:[2,2,3,1,2,3,2,2,1]},
      {name:'EP2E', sgl:'Rahsan Dursun Kirgiz', owner:'Dogan Akbulut', score:1.3, themes:[1.3,1.0,1.0,2.0], attrs:[1,1,2,1,1,1,1,2,2]},
-     {name:'Procurement', sgl:'Prashanth K Basavarajappa', owner:'—', score:2.3, themes:[2.7,2.3,2.0,2.0], attrs:[3,3,2,1,4,3,2,2,1]},
-     {name:'Sales & Spare Parts', sgl:'—', owner:'—', score:2.0, themes:[2.3,1.7,2.0,2.0], attrs:[3,2,3,1,2,2,2,2,2]},
-     {name:'B2B Presales', sgl:'Reena M', owner:'Nicole Belouazza', score:2.1, themes:[2.3,1.7,2.0,2.5], attrs:[2,2,3,1,2,2,2,2,3]},
+     {name:'Procurement', sgl:'Prashanth K Basavarajappa', owner:'Melanie Schnittger', score:2.4, themes:[2.7,3.0,2.0,2.0], attrs:[3,3,2,1,4,3,2,2,1]},
+     {name:'Sales & Spare Parts', sgl:'Vinod Chadwa B', owner:'Thomas Reiner', score:2.0, themes:[2.3,1.7,2.0,2.0], attrs:[3,2,3,1,2,2,2,2,2]},
+     {name:'B2B Presales', sgl:'Reena M', owner:'Nicole Belouazza', score:2.1, themes:[2.5,2.3,2.0,1.7], attrs:[2,2,3,1,2,2,2,2,3]},
      {name:'B2B Sales & Spareparts', sgl:'Thirumal Reddy', owner:'Thomas Reiner', score:1.9, themes:[2.3,1.7,2.0,1.5], attrs:[3,2,2,1,2,2,2,1,2]},
-     {name:'Finance', sgl:'Ekamber', owner:'Matthias', score:2.2, themes:[3.0,1.7,2.0,2.0], attrs:[3,3,3,1,2,2,2,3,1]}
+     {name:'Finance', sgl:'Ekamber', owner:'Matthias', score:2.2, themes:[3.0,1.7,2.0,2.0], attrs:[3,3,3,1,2,2,2,3,1]},
+     {name:'REM', sgl:'Rahsan Dursun Kirgiz', owner:'Dogan Akbulut', score:1.3, themes:[1.3,1.0,1.0,2.0], attrs:[1,1,2,1,1,1,1,2,2]}
    ]},
   {id:'industry', name:'Industry', score:2.06, color:'#ea580c',
    themes:[2.58,1.75,2.00,2.25], attrs:[2.50,2.50,2.75,1.00,2.25,2.00,2.00,2.50,2.00],
    shapes:[
-     {name:'Digital Factory (Ashoka)', sgl:'Ashoka Basti Narayana', owner:'Klaus Gutkowski', score:1.6, themes:[2.0,1.5,2.0,1.5], attrs:[2,2,2,1,2,2,2,2,1]},
-     {name:'Digital Factory (Karam)', sgl:'Karam D. Singha', owner:'Klaus Gutkowski', score:2.7, themes:[3.0,2.3,2.0,3.0], attrs:[3,3,3,1,4,2,2,3,3]},
+     {name:'Digital Factory (Ashoka)', sgl:'Ashoka Basti Narayana', owner:'Klaus Gutkowski', score:1.6, themes:[1.3,1.7,2.0,1.5], attrs:[1,2,2,1,2,2,2,2,1]},
+     {name:'Digital Factory (Karam)', sgl:'Karam D. Singha', owner:'Klaus Gutkowski', score:2.7, themes:[3.0,3.0,2.3,2.0], attrs:[3,3,3,1,4,2,2,3,3]},
      {name:'Digital Factory (Abhijeet)', sgl:'Abhijeet Kumar', owner:'Klaus Gutkowski', score:2.0, themes:[2.3,1.7,2.0,2.0], attrs:[2,2,3,1,2,2,2,2,2]},
      {name:'Digital Supply Chain Planning', sgl:'Ziauddin Shaik', owner:'Gerhard Peichel', score:1.7, themes:[2.0,1.3,2.0,1.5], attrs:[2,2,2,1,1,2,2,2,1]},
      {name:'Global Factory Logistics', sgl:'Sravanthi Abbu', owner:'Thomas Posner', score:2.3, themes:[3.0,1.7,2.0,2.5], attrs:[3,3,3,1,2,2,2,3,2]}
    ]}
 ];
+
+const HOME_LAYOUT = {
+  ds:{label:'DS', dx:-120, dy:3, width:92, height:42},
+  consumer:{label:'Consumer', dx:-163, dy:-69, width:110, height:44},
+  hub:{label:'★ Hub Overall', dx:-122, dy:-73, width:148, height:55, hub:true},
+  appliance:{label:'Appliance', dx:-86, dy:43, width:116, height:42},
+  dps:{label:'DPS', dx:14, dy:-172, width:106, height:42},
+  'data-ai':{label:'Data & AI', dx:26, dy:54, width:112, height:42},
+  enterprise:{label:'Enterprise', dx:73, dy:-96, width:130, height:42},
+  industry:{label:'Industry', dx:110, dy:69, width:108, height:42}
+};
+
+const TOTAL_SHAPES = () => CL.reduce((sum, cl) => sum + cl.shapes.length, 0);
+const round2 = n => Math.round((n + Number.EPSILON) * 100) / 100;
+const mean = nums => nums.length ? nums.reduce((sum, value) => sum + Number(value), 0) / nums.length : 0;
+const meanVector = (items, key, len) => Array.from({length: len}, (_, idx) => round2(mean(items.map(item => item[key][idx]))));
+
+function recalcAggregates() {
+  CL.forEach(cl => {
+    cl.score = round2(mean(cl.shapes.map(shape => shape.score)));
+    cl.themes = meanVector(cl.shapes, 'themes', TN.length);
+    cl.attrs = meanVector(cl.shapes, 'attrs', AN.length);
+  });
+
+  const allShapes = CL.flatMap(cl => cl.shapes);
+  HUB.score = round2(mean(allShapes.map(shape => shape.score)));
+  HUB.themes = meanVector(allShapes, 'themes', TN.length);
+  HUB.attrs = meanVector(allShapes, 'attrs', AN.length);
+}
+
+recalcAggregates();
 
 // ── ACTION PLANS ──
 const AP = {
@@ -570,6 +524,78 @@ function actions(attrs) {
   return gaps.map((g,i)=>`<div class="act"><div class="act-n">${i+1}</div><div class="act-t"><strong>${g.n} (${(+g.v).toFixed(0)}/4):</strong> ${AP[g.n]||'Develop a targeted improvement plan with concrete 90-day milestones and quarterly reviews.'}</div></div>`).join('');
 }
 
+function scoreX(score) {
+  return 75 + ((Math.max(1, Math.min(4, +score)) - 1) / 3) * 1000;
+}
+
+function pointOnCurve(score) {
+  const path = document.getElementById('maturity-curve-path');
+  if (!path) return {x: scoreX(score), y: 360};
+  const targetX = scoreX(score);
+  const total = path.getTotalLength();
+  let lo = 0;
+  let hi = total;
+  for (let i = 0; i < 25; i += 1) {
+    const mid = (lo + hi) / 2;
+    const point = path.getPointAtLength(mid);
+    if (point.x < targetX) lo = mid;
+    else hi = mid;
+  }
+  return path.getPointAtLength((lo + hi) / 2);
+}
+
+function renderHomeChart() {
+  const connectors = document.getElementById('home-connectors');
+  const nodes = document.getElementById('home-nodes');
+  const pill = document.getElementById('hub-pill');
+  if (!connectors || !nodes || !pill) return;
+
+  const hubLevel = lv(HUB.score);
+  pill.innerHTML = `Hub: <strong>${HUB.score.toFixed(2)}/4</strong> · ${hubLevel.s} · ${TOTAL_SHAPES()} Teams`;
+
+  const entries = [
+    ...CL.map(cl => ({type:'cluster', id:cl.id, name:cl.name, short:HOME_LAYOUT[cl.id].label, color:cl.color, score:cl.score})),
+    {type:'hub', id:'hub', name:HUB.name, short:HOME_LAYOUT.hub.label, color:HUB.color, score:HUB.score}
+  ];
+
+  const points = Object.fromEntries(entries.map(entry => [entry.id, pointOnCurve(entry.score)]));
+
+  connectors.innerHTML = entries.map(entry => {
+    const cfg = HOME_LAYOUT[entry.id];
+    const point = points[entry.id];
+    const labelX = point.x + cfg.dx;
+    const labelY = point.y + cfg.dy;
+    const lineX2 = cfg.dx < 0 ? labelX + cfg.width : labelX;
+    const lineY2 = labelY + (cfg.hub ? 28 : cfg.height / 2);
+    const width = cfg.hub ? 1.5 : 1.2;
+    return `<line x1="${point.x.toFixed(1)}" y1="${point.y.toFixed(1)}" x2="${lineX2.toFixed(1)}" y2="${lineY2.toFixed(1)}" stroke="${entry.color}" stroke-width="${width}" stroke-dasharray="5,3"/>`;
+  }).join('');
+
+  nodes.innerHTML = entries.map(entry => {
+    const cfg = HOME_LAYOUT[entry.id];
+    const point = points[entry.id];
+    const level = lv(entry.score);
+    const labelX = point.x + cfg.dx;
+    const labelY = point.y + cfg.dy;
+    const action = entry.type === 'hub' ? 'showHub()' : `showCluster('${entry.id}')`;
+    const circleR = cfg.hub ? 25 : 22;
+    const dotR = cfg.hub ? 12 : 10;
+    const labelText = cfg.hub
+      ? `<text x="${labelX + cfg.width / 2}" y="${labelY + 18}" text-anchor="middle" font-size="11.5" font-weight="800" fill="white" font-family="Segoe UI,sans-serif">${entry.short}</text>
+        <text x="${labelX + cfg.width / 2}" y="${labelY + 35}" text-anchor="middle" font-size="14" font-weight="900" fill="white" font-family="Segoe UI,sans-serif">${entry.score.toFixed(2)} · ${level.s}</text>
+        <text x="${labelX + cfg.width / 2}" y="${labelY + 48}" text-anchor="middle" font-size="9.5" fill="rgba(255,255,255,.7)" font-family="Segoe UI,sans-serif">${TOTAL_SHAPES()} Teams · ${CL.length} Clusters</text>`
+      : `<text x="${labelX + cfg.width / 2}" y="${labelY + 18}" text-anchor="middle" font-size="12" font-weight="800" fill="white" font-family="Segoe UI,sans-serif">${entry.short}</text>
+        <text x="${labelX + cfg.width / 2}" y="${labelY + 33}" text-anchor="middle" font-size="10.5" fill="rgba(255,255,255,.85)" font-family="Segoe UI,sans-serif">${entry.score.toFixed(2)} · ${level.s}</text>`;
+    return `<g class="cnode" onclick="${action}" tabindex="0" role="button" aria-label="${entry.name} ${entry.score.toFixed(2)} ${level.s}" onkeydown="if(event.key==='Enter')${action}">
+      <circle cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="${circleR}" fill="${entry.color}26" class="nring"/>
+      <circle cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="${dotR}" fill="${entry.color}" stroke="white" stroke-width="2.5"/>
+      ${cfg.hub ? `<text x="${point.x.toFixed(1)}" y="${(point.y + 5).toFixed(1)}" text-anchor="middle" font-size="12" fill="white" font-weight="900" font-family="Segoe UI,sans-serif">★</text>` : ''}
+      <rect x="${labelX.toFixed(1)}" y="${labelY.toFixed(1)}" width="${cfg.width}" height="${cfg.hub ? 55 : cfg.height}" rx="${cfg.hub ? 8 : 7}" fill="${entry.color}" filter="url(#ds)"/>
+      ${labelText}
+    </g>`;
+  }).join('');
+}
+
 // ── NAVIGATION ──
 let _cc=null;
 
@@ -595,26 +621,27 @@ function showHome() {
 function showHub() {
   _cc=null;
   setBC(`<button class="bc-link" onclick="showHome()">Hub Overview</button><span class="bc-sep">›</span><span class="bc-cur">Hub Summary</span>`);
-  const c='#16a34a';
+  const c=HUB.color;
+  const hubLevel = lv(HUB.score);
   const html=`
     <button class="back-btn" onclick="showHome()">← Back to Chart</button>
     <div class="hero" style="background:linear-gradient(135deg,#0c3c24,${c})">
       <div class="hero-in">
-        <div class="hero-num">1.87<sub>/4</sub></div>
+        <div class="hero-num">${HUB.score.toFixed(2)}<sub>/4</sub></div>
         <div class="hero-div"></div>
         <div class="hero-meta">
-          <div class="hero-badge">🌐 BSH Hub Overall — L2 Capability Hub</div>
+          <div class="hero-badge">🌐 BSH Hub Overall — ${hubLevel.s} ${hubLevel.n}</div>
           <div class="hero-stats">
-            <div><div class="hs-k">Teams</div><div class="hs-v">30</div></div>
-            <div><div class="hs-k">Clusters</div><div class="hs-v">7</div></div>
-            <div><div class="hs-k">AI Gap</div><div class="hs-v" style="color:#fca5a5">1.13</div></div>
+            <div><div class="hs-k">Teams</div><div class="hs-v">${TOTAL_SHAPES()}</div></div>
+            <div><div class="hs-k">Clusters</div><div class="hs-v">${CL.length}</div></div>
+            <div><div class="hs-k">AI Gap</div><div class="hs-v" style="color:${HUB.attrs[3] <= 1.5 ? '#fca5a5' : '#86efac'}">${HUB.attrs[3].toFixed(2)}</div></div>
             <div><div class="hs-k">Target</div><div class="hs-v">2027-28</div></div>
           </div>
         </div>
         <div style="flex-shrink:0">${radar(HUB.themes,c,165)}</div>
       </div>
     </div>
-    ${strip(1.87,c)}
+    ${strip(HUB.score,c)}
     <div class="grid4">${TN.map((t,i)=>tcCard(t,HUB.themes[i],c)).join('')}</div>
     <div class="grid2">
       <div class="card">
@@ -626,7 +653,7 @@ function showHub() {
         ${gapBox(HUB.attrs)}
       </div>
     </div>
-    <div class="ibox"><h4>💡 Hub-Level Insights</h4><p>${insight({name:'The BSH Hub',score:1.87,attrs:HUB.attrs})}</p></div>
+    <div class="ibox"><h4>💡 Hub-Level Insights</h4><p>${insight({name:'The BSH Hub',score:HUB.score,attrs:HUB.attrs})}</p></div>
     <div class="abox"><h4>🎯 Hub-Level Action Priorities</h4>${actions(HUB.attrs)}</div>
     <div class="card">
       <div class="card-h">All Clusters — Click to Explore</div>
@@ -755,14 +782,13 @@ function showShape(cid, idx) {
       </div>
     </div>
     ${gapBox(sh.attrs)}
-    <div class="ibox"><h4>💡 Shape Insights</h4><p>${insight({name:sh.name,score:sh.score,attrs:sh.attrs})}</p></div>
-    <div class="abox"><h4>🎯 Action Plans — ${sh.name}</h4>${actions(sh.attrs)}</div>`;
+    <div class="ibox"><h4>💡 Shape Insights</h4><p>${insight({name:sh.name,score:sh.score,attrs:sh.attrs})}</p></div>`;
   go('v-shape',html);
 }
 
 // Init
 setBC('<span class="bc-cur">Hub Overview — Maturity Curve</span>');
+renderHomeChart();
 </script>
 </body>
 </html>
-```
