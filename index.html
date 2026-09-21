@@ -255,19 +255,28 @@ button:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}
       <!-- S-CURVE -->
       <path id="maturity-curve-path" d="M75,422 C150,418 195,408 241,400 C295,390 348,372 408,356 C465,342 530,318 575,300 C625,280 685,258 741,238 C800,218 858,200 908,188 C952,178 1012,166 1075,157"
         fill="none" stroke="#1e293b" stroke-width="3.5" stroke-linecap="round"/>
-      <!-- 2027-28 Target -->
-      <circle cx="741" cy="238" r="28" fill="rgba(22,163,74,.12)" stroke="#16a34a" stroke-width="2.5"/>
-      <circle cx="741" cy="238" r="18" fill="rgba(22,163,74,.2)" stroke="#16a34a" stroke-width="2"/>
-      <circle cx="741" cy="238" r="7" fill="#16a34a"/>
-      <line x1="769" y1="238" x2="800" y2="238" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4,2"/>
-      <polygon points="798,234 808,238 798,242" fill="#16a34a"/>
-      <rect x="812" y="212" width="118" height="46" rx="9" fill="#16a34a" filter="url(#ds)"/>
-      <text x="871" y="232" text-anchor="middle" font-size="18" font-weight="900" fill="white" font-family="Segoe UI,sans-serif">2027-28</text>
-      <text x="871" y="249" text-anchor="middle" font-size="9.5" fill="rgba(255,255,255,.8)" font-family="Segoe UI,sans-serif">Target: L3 Strategic Partner</text>
+      <!-- 2028 Target -->
+      <circle cx="642" cy="274" r="28" fill="rgba(22,163,74,.12)" stroke="#16a34a" stroke-width="2.5"/>
+      <circle cx="642" cy="274" r="18" fill="rgba(22,163,74,.2)" stroke="#16a34a" stroke-width="2"/>
+      <circle cx="642" cy="274" r="7" fill="#16a34a"/>
+      <line x1="670" y1="274" x2="701" y2="274" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <polygon points="699,270 709,274 699,278" fill="#16a34a"/>
+      <rect x="713" y="248" width="98" height="46" rx="9" fill="#16a34a" filter="url(#ds)"/>
+      <text x="762" y="268" text-anchor="middle" font-size="18" font-weight="900" fill="white" font-family="Segoe UI,sans-serif">2028</text>
+      <text x="762" y="285" text-anchor="middle" font-size="9.5" fill="rgba(255,255,255,.8)" font-family="Segoe UI,sans-serif">Target: 2.7</text>
+      <!-- 2030 Target -->
+      <circle cx="741" cy="238" r="28" fill="rgba(249,115,22,.12)" stroke="#f97316" stroke-width="2.5"/>
+      <circle cx="741" cy="238" r="18" fill="rgba(249,115,22,.2)" stroke="#f97316" stroke-width="2"/>
+      <circle cx="741" cy="238" r="7" fill="#f97316"/>
+      <line x1="769" y1="238" x2="800" y2="238" stroke="#f97316" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <polygon points="798,234 808,238 798,242" fill="#f97316"/>
+      <rect x="812" y="212" width="92" height="46" rx="9" fill="#f97316" filter="url(#ds)"/>
+      <text x="858" y="232" text-anchor="middle" font-size="18" font-weight="900" fill="white" font-family="Segoe UI,sans-serif">2030</text>
+      <text x="858" y="249" text-anchor="middle" font-size="9.5" fill="rgba(255,255,255,.85)" font-family="Segoe UI,sans-serif">Target: 3.0</text>
       <g id="home-connectors" opacity=".65" style="pointer-events:none"></g>
       <g id="home-nodes"></g>
     </svg>
-    <div class="chart-hint"><div class="pulse"></div>Click any cluster label or dot to drill down · 2027-28 Target = L3 Strategic Partner</div>
+    <div class="chart-hint"><div class="pulse"></div>Click any cluster label or dot to drill down · 2028 target at 2.7 · 2030 target at 3.0</div>
   </div>
 </div>
 
@@ -635,7 +644,7 @@ function showHub() {
             <div><div class="hs-k">Teams</div><div class="hs-v">${TOTAL_SHAPES()}</div></div>
             <div><div class="hs-k">Clusters</div><div class="hs-v">${CL.length}</div></div>
             <div><div class="hs-k">AI Gap</div><div class="hs-v" style="color:${HUB.attrs[3] <= 1.5 ? '#fca5a5' : '#86efac'}">${HUB.attrs[3].toFixed(2)}</div></div>
-            <div><div class="hs-k">Target</div><div class="hs-v">2027-28</div></div>
+            <div><div class="hs-k">Targets</div><div class="hs-v">2028 · 2030</div></div>
           </div>
         </div>
         <div style="flex-shrink:0">${radar(HUB.themes,c,165)}</div>
