@@ -109,6 +109,14 @@ button:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}
 .module-chip{display:block;background:#f0f9ff;border:1px solid #bae6fd;border-radius:4px;padding:4px 6px;font-size:10px;color:#0f172a;line-height:1.6}
 .module-chip a{color:#0f172a;text-decoration:underline;text-decoration-thickness:1.2px;text-underline-offset:2px;word-break:break-word}
 .module-chip a:hover{color:#1d4ed8}
+.breakdown-card{background:#fff;border:1px solid var(--bdr);border-radius:var(--r2);box-shadow:var(--sh);padding:16px}
+.breakdown-card h3{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:12px}
+.breakdown-shell{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:16px;align-items:start}
+.breakdown-svg-wrap{overflow-x:auto}
+.breakdown-svg{width:100%;min-width:700px;height:auto;display:block;background:#fff}
+.breakdown-legend{display:flex;flex-direction:column;gap:8px;justify-content:center;padding-top:8px}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:11.5px;color:#1e293b;line-height:1.3}
+.legend-swatch{width:10px;height:10px;border-radius:2px;display:inline-block}
 .chart-card{background:#fff;border-radius:var(--r3);box-shadow:var(--sh3);overflow:hidden;border:1px solid var(--bdr)}
 .chart-svg{width:100%;display:block}
 .chart-hint{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-top:1px solid var(--bdr);font-size:11.5px;color:var(--muted)}
@@ -773,6 +781,102 @@ function showActionItems() {
     }
   ];
 
+  const clusterBreakdownParams = [
+    'AI Savviness & AI Leadership',
+    'Build a Succession Plan for Key Team Members',
+    'Cost Stewardship',
+    'End-to-End Global Ownership',
+    'Improve Cost Stewardship',
+    'JRA Intensity & Future Digital',
+    'Leadership Pipeline & Succession',
+    'Scalable Innovation',
+    'Technical & Functional Depth'
+  ];
+
+  const clusterBreakdownColors = {
+    'AI Savviness & AI Leadership': '#0e7490',
+    'Build a Succession Plan for Key Team Members': '#f97316',
+    'Cost Stewardship': '#16a34a',
+    'End-to-End Global Ownership': '#2563eb',
+    'Improve Cost Stewardship': '#a21caf',
+    'JRA Intensity & Future Digital': '#4d7c0f',
+    'Leadership Pipeline & Succession': '#0f766e',
+    'Scalable Innovation': '#d97706',
+    'Technical & Functional Depth': '#7c3aed'
+  };
+
+  const clusterBreakdownData = [
+    {cluster:'Appliance', values:[3.0, 1.0, 0.6, 2.1, 0.8, 0.4, 1.2, 0.7, 0.9]},
+    {cluster:'Consumer', values:[2.9, 0.8, 0.7, 1.8, 0.9, 0.5, 1.0, 0.8, 0.7]},
+    {cluster:'DPS', values:[2.7, 0.9, 0.7, 1.5, 0.8, 0.6, 1.1, 0.9, 0.8]},
+    {cluster:'Enterprise', values:[2.8, 1.4, 0.8, 1.7, 1.0, 0.7, 1.6, 0.9, 1.0]},
+    {cluster:'Industry', values:[3.1, 1.0, 0.9, 1.9, 1.1, 0.6, 1.5, 0.8, 0.9]}
+  ];
+
+  const clusterBreakdownChart = (() => {
+    const maxValue = 3.5;
+    const chartLeft = 38;
+    const chartTop = 18;
+    const chartWidth = 620;
+    const chartHeight = 185;
+    const groupWidth = 110;
+    const barWidth = 12;
+    const barGap = 4;
+    const grid = Array.from({length: 8}, (_, i) => {
+      const y = chartTop + (chartHeight - (i / 7) * chartHeight);
+      const label = (maxValue * (7 - i) / 7).toFixed(1);
+      return `
+        <line x1="${chartLeft}" y1="${y}" x2="${chartLeft + chartWidth}" y2="${y}" stroke="#dfe7f1" stroke-width="1" />
+        <text x="${chartLeft - 12}" y="${y + 4}" font-size="10" fill="#64748b" text-anchor="end">${label}</text>
+      `;
+    }).join('');
+
+    const bars = clusterBreakdownData.flatMap((cluster, ci) => {
+      const xBase = chartLeft + ci * groupWidth + 14;
+      return cluster.values.map((value, vi) => {
+        const param = clusterBreakdownParams[vi];
+        const x = xBase + vi * (barWidth + barGap);
+        const barHeight = (value / maxValue) * (chartHeight - 18);
+        const y = chartTop + chartHeight - barHeight;
+        return `
+          <rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" fill="${clusterBreakdownColors[param]}" rx="2" />
+        `;
+      });
+    }).join('');
+
+    const axis = clusterBreakdownData.map((cluster, ci) => {
+      const x = chartLeft + ci * groupWidth + 28;
+      return `
+        <text x="${x}" y="${chartTop + chartHeight + 22}" font-size="11" fill="#334155" text-anchor="middle">${cluster.cluster}</text>
+      `;
+    }).join('');
+
+    return `
+      <div class="breakdown-card">
+        <h3>Cluster-wise breakdown on action parameters</h3>
+        <div class="breakdown-shell">
+          <div class="breakdown-svg-wrap">
+            <svg class="breakdown-svg" viewBox="0 0 700 260" role="img" aria-label="Cluster-wise breakdown on action parameters">
+              <rect x="0" y="0" width="700" height="260" fill="#fff" />
+              ${grid}
+              <line x1="${chartLeft}" y1="${chartTop + chartHeight}" x2="${chartLeft + chartWidth}" y2="${chartTop + chartHeight}" stroke="#94a3b8" stroke-width="1" />
+              ${bars}
+              ${axis}
+            </svg>
+          </div>
+          <div class="breakdown-legend">
+            ${clusterBreakdownParams.map(param => `
+              <div class="legend-item">
+                <span class="legend-swatch" style="background:${clusterBreakdownColors[param]}"></span>
+                <span>${param}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  })();
+
   const aiSavvinessRows = [
     {
       role:'Business Analyst (BA) & Product Owner (PO)',
@@ -879,6 +983,8 @@ function showActionItems() {
           </div>
         </div>
       </div>
+
+      ${clusterBreakdownChart}
 
       <div class="action-summary-grid">
         <div class="summary-card keyfindings">
