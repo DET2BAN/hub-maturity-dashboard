@@ -10,6 +10,10 @@ html{scroll-behavior:smooth}
 body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f0f4f8;color:#0f172a;font-size:14px;line-height:1.55;min-height:100vh}
 button{cursor:pointer;font-family:inherit;border:none;background:none}
 button:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}
+.tabnav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-left:auto;padding-left:8px}
+.tab-btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);color:rgba(255,255,255,.85);border-radius:999px;padding:6px 12px;font-size:11px;font-weight:700;transition:all .18s ease}
+.tab-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+.tab-btn.active{background:#fff;color:#0c1e3c;border-color:#fff;box-shadow:0 4px 12px rgba(255,255,255,.12)}
 :root{
   --navy:#0c1e3c;--bg:#f0f4f8;--surf:#fff;--surf2:#f8fafc;--bdr:#e2e8f0;
   --mid:#475569;--muted:#64748b;--sub:#94a3b8;
@@ -45,9 +49,66 @@ button:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}
 
 /* HOME */
 #v-home{padding:20px;max-width:1440px;margin:0 auto}
+#v-action-items{padding:20px;max-width:1440px;margin:0 auto}
 .page-ttl{font-size:24px;font-weight:900;letter-spacing:-.5px;margin-bottom:3px}
 .page-ttl .hl{color:#f97316}
 .page-sub{font-size:12.5px;color:var(--muted);font-style:italic;margin-bottom:14px}
+.action-shell{display:flex;flex-direction:column;gap:16px}
+.action-card{overflow:hidden}
+.focus-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.focus-card{background:linear-gradient(135deg,#ffffff,#f8fafc);border:1px solid var(--bdr);border-radius:var(--r2);padding:16px;box-shadow:var(--sh);min-height:150px}
+.focus-card h3{font-size:16px;font-weight:900;color:#0f172a;line-height:1.3;margin:6px 0 8px}
+.focus-card p{font-size:12.5px;color:var(--muted);line-height:1.7}
+.mini-label{display:inline-block;background:#dbeafe;border:1px solid #bfdbfe;color:#1d4ed8;border-radius:999px;padding:4px 8px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+.focus-count{display:inline-flex;align-items:center;border-radius:999px;background:#ecfeff;border:1px solid #a5f3fc;color:#0f766e;padding:4px 8px;font-size:11px;font-weight:800;margin-bottom:6px}
+.action-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.summary-card{background:#fff;border:1px solid var(--bdr);border-radius:var(--r2);box-shadow:var(--sh);padding:16px}
+.summary-card h3{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:12px}
+.kpi-boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.kpi-box{background:#f8fafc;border:1px solid var(--bdr);border-radius:10px;padding:12px;text-align:center}
+.kpi-box .kpi-label{display:block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:5px}
+.kpi-box .kpi-value{font-size:28px;font-weight:900;color:#0f172a;letter-spacing:-1px}
+.kpi-box .kpi-sub{display:block;font-size:10px;color:var(--muted);margin-top:2px}
+.focus-chart-wrap{padding:14px 12px 8px}
+.focus-chart{display:flex;flex-direction:column;gap:10px}
+.focus-row{display:grid;grid-template-columns:290px 1fr;align-items:center;column-gap:16px}
+.focus-label{font-size:14px;font-weight:500;color:#1f2937;line-height:1.4;text-align:right;padding-right:10px}
+.focus-track{position:relative;height:18px;border-radius:5px;background:#f1f5f9;border:1px solid #dfe7f1;overflow:hidden}
+.focus-bar{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,#2f8fe9,#0d6ec9);border-radius:4px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.focus-bar.is-primary{background:linear-gradient(90deg,#0d6ec9,#0a5eb7)}
+.focus-value{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:800;color:#0f172a}
+.chart-legend{display:flex;justify-content:center;margin-top:10px;font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.2px}
+.keyfindings{display:grid;grid-template-columns:1fr;gap:12px}
+.keyfindings .summary-card{padding:20px}
+.keyfindings h4{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:#1d4ed8;margin-bottom:10px}
+.keyfindings ul{padding-left:18px;display:flex;flex-direction:column;gap:8px;color:#0f172a;font-size:13px;line-height:1.7}
+.keyfindings li strong{font-weight:800}
+.priority-table,.cluster-table{width:100%;border-collapse:collapse;border-spacing:0;margin-top:8px}
+.priority-table th,.priority-table td,.cluster-table th,.cluster-table td{border:1px solid var(--bdr);padding:10px 12px;text-align:left;vertical-align:top;font-size:12.5px}
+.priority-table th,.cluster-table th{background:#f8fafc;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.priority-pill{display:inline-block;padding:3px 8px;border-radius:999px;background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:800;border:1px solid #bfdbfe}
+.priority-pill.alt{background:#e0f2fe;color:#0f766e;border-color:#a5f3fc}
+.action-table,.learn-table{width:100%;border-collapse:collapse;border-spacing:0}
+.action-table th,.action-table td,.learn-table th,.learn-table td{border:1px solid var(--bdr);padding:12px 10px;vertical-align:top;text-align:left}
+.action-table th,.learn-table th{background:#f8fafc;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.action-table td,.learn-table td{font-size:12.5px;color:#0f172a;line-height:1.7}
+.bullet-list{padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.learn-table th:nth-child(1), .learn-table td:nth-child(1){width:16%}
+.learn-table th:nth-child(2), .learn-table td:nth-child(2){width:10%}
+.learn-table th:nth-child(3), .learn-table td:nth-child(3){width:28%}
+.learn-table th:nth-child(4), .learn-table td:nth-child(4){width:30%}
+.matrix-table{width:100%;border-collapse:collapse;border-spacing:0;table-layout:fixed}
+.matrix-table th,.matrix-table td{border:1px solid var(--bdr);padding:10px 8px;vertical-align:top;text-align:left;background:#fff}
+.matrix-table th{background:#f8fafc;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.matrix-table td{font-size:12px;color:#0f172a;line-height:1.5}
+.matrix-role-cell{width:18%;font-weight:700}
+.matrix-tag{display:block;font-size:10px;font-weight:800;color:#0f172a;margin-bottom:7px}
+.matrix-questions{display:flex;flex-direction:column;gap:7px;font-size:11.5px;line-height:1.5}
+.matrix-questions p{margin:0}
+.matrix-module-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.module-chip{display:block;background:#f0f9ff;border:1px solid #bae6fd;border-radius:4px;padding:4px 6px;font-size:10px;color:#0f172a;line-height:1.6}
+.module-chip a{color:#0f172a;text-decoration:underline;text-decoration-thickness:1.2px;text-underline-offset:2px;word-break:break-word}
+.module-chip a:hover{color:#1d4ed8}
 .chart-card{background:#fff;border-radius:var(--r3);box-shadow:var(--sh3);overflow:hidden;border:1px solid var(--bdr)}
 .chart-svg{width:100%;display:block}
 .chart-hint{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-top:1px solid var(--bdr);font-size:11.5px;color:var(--muted)}
@@ -178,8 +239,8 @@ button:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}
 .cbar-f{height:100%;border-radius:4px;width:0;transition:width .9s ease}
 
 /* RESPONSIVE */
-@media(max-width:960px){.grid3{grid-template-columns:1fr}.grid4{grid-template-columns:1fr 1fr}.grid2r{grid-template-columns:1fr}}
-@media(max-width:640px){.grid4{grid-template-columns:1fr 1fr}#v-home,#v-cluster,#v-shape{padding:12px}.page-ttl{font-size:19px}.hero-num{font-size:38px}.grid2{grid-template-columns:1fr}.gap-grid{grid-template-columns:1fr}}
+@media(max-width:960px){.grid3{grid-template-columns:1fr}.grid4{grid-template-columns:1fr 1fr}.grid2r{grid-template-columns:1fr}.focus-grid{grid-template-columns:1fr}}
+@media(max-width:640px){.grid4{grid-template-columns:1fr 1fr}#v-home,#v-cluster,#v-shape,#v-action-items{padding:12px}.page-ttl{font-size:19px}.hero-num{font-size:38px}.grid2{grid-template-columns:1fr}.gap-grid{grid-template-columns:1fr}.tabnav{margin-left:0;padding-left:0;justify-content:flex-start}.tb{height:auto;padding:10px 14px;flex-wrap:wrap}.tb-brand{max-width:180px}.tb-sep{display:none}.action-table,.learn-table{display:block;overflow-x:auto;white-space:normal}}
 </style>
 </head>
 <body>
@@ -194,6 +255,10 @@ button:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}
     </div>
     <div class="tb-sep"></div>
     <nav class="bc" id="bc-nav"><span class="bc-cur">Hub Overview</span></nav>
+    <div class="tabnav" aria-label="Dashboard sections">
+      <button class="tab-btn active" type="button" onclick="showHome()">Overview</button>
+      <button class="tab-btn" type="button" onclick="showActionItems()">Action Items</button>
+    </div>
     <div class="tb-pill" id="hub-pill">Hub: <strong>--</strong></div>
   </div>
 </header>
@@ -285,6 +350,9 @@ button:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}
 
 <!-- SHAPE VIEW -->
 <div id="v-shape" class="view"></div>
+
+<!-- ACTION ITEMS VIEW -->
+<div id="v-action-items" class="view"></div>
 
 <script>
 // ── CONSTANTS ──
@@ -533,6 +601,27 @@ function actions(attrs) {
   return gaps.map((g,i)=>`<div class="act"><div class="act-n">${i+1}</div><div class="act-t"><strong>${g.n} (${(+g.v).toFixed(0)}/4):</strong> ${AP[g.n]||'Develop a targeted improvement plan with concrete 90-day milestones and quarterly reviews.'}</div></div>`).join('');
 }
 
+function moduleLink(moduleName) {
+  const hrefMap = {
+    'What is AI? - Artificial Intelligence - BSH Intranet': 'https://www.bsh-group.com/en/',
+    'DEXA: AI Foundation Level Learning Path V2 - SAP SuccessFactors': 'https://learning.sap.com/',
+    'Prompt Engineering: How to talk to AI': 'https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/prompt-engineering',
+    'Advanced Prompt Engineering': 'https://www.promptingguide.ai/',
+    'Artificial Intelligence and Business Strategy Online Class | LinkedIn Learning': 'https://www.linkedin.com/learning/',
+    'AI Trainings: Decisions Path': 'https://www.bsh-group.com/en/',
+    'BSH GenAI tools at a glance - Artificial Intelligence - BSH Intranet': 'https://www.bsh-group.com/en/',
+    'Microsoft Copilot Training Series - Data & Analytics - BSH Intranet': 'https://learn.microsoft.com/en-us/copilot/',
+    'Level up your AI - Mastering key features in BSH AI - SAP SuccessFactors': 'https://learning.sap.com/',
+    'Building robust and responsible solutions': 'https://www.microsoft.com/en-us/ai',
+    'AI Learning Paths: Advanced Track': 'https://learn.microsoft.com/en-us/training/',
+    'DBAReadiness Test - Power Apps': 'https://learn.microsoft.com/en-us/power-apps/',
+    'AI Register': 'https://www.bsh-group.com/en/',
+    'BSH AI Register - Artificial Intelligence - BSH Intranet': 'https://www.bsh-group.com/en/'
+  };
+  const href = hrefMap[moduleName] || '#';
+  return `<a href="${href}" target="_blank" rel="noopener noreferrer">${moduleName}</a>`;
+}
+
 function scoreX(score) {
   return 75 + ((Math.max(1, Math.min(4, +score)) - 1) / 3) * 1000;
 }
@@ -619,12 +708,326 @@ function go(id, html) {
 
 function setBC(h) { document.getElementById('bc-nav').innerHTML=h; }
 
+function setTabState(activeTab) {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim() === activeTab);
+  });
+}
+
 function showHome() {
   _cc=null;
+  setTabState('Overview');
   setBC('<span class="bc-cur">Hub Overview — Maturity Curve</span>');
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('v-home').classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showActionItems() {
+  setTabState('Action Items');
+  setBC('<button class="bc-link" onclick="showHome()">Hub Overview</button><span class="bc-sep">›</span><span class="bc-cur">Action Items</span>');
+  const topAreas = [
+    {name:'AI Savviness & AI Leadership', count:5, detail:'Most frequently cited challenge across the portfolio. It is the dominant capability gap to accelerate adoption, experimentation, and team readiness.'},
+    {name:'Leadership Pipeline & Succession', count:1, detail:'Important for building scalable leadership capacity and preparing the next generation of decision-makers.'},
+    {name:'Improve Cost Stewardship', count:1, detail:'A strategic enabler to ensure AI and digital investments remain financially disciplined and scalable.'}
+  ];
+
+  const focusData = [
+    {label:'AI Savviness & AI Leadership', value:13},
+    {label:'End-to-End Global Ownership', value:7},
+    {label:'Leadership Pipeline & Succession', value:6},
+    {label:'Cost Stewardship', value:5},
+    {label:'Scalable Innovation', value:4},
+    {label:'Build a Succession Plan for Key Team Members', value:3},
+    {label:'Technical & Functional Depth', value:3},
+    {label:'JRA Intensity & Future Digital', value:2},
+    {label:'Improve Cost Stewardship', value:2}
+  ];
+  const maxFocus = Math.max(...focusData.map(item => item.value));
+
+  const clusterPlanRows = [
+    {
+      cluster:'Appliance',
+      item:'AI Savviness & AI Leadership',
+      highlights:['Provide AI training for the team.','Encourage development of AI-related features and Proof of Concepts (POCs).','Nominate team members for official BSH AI Trainings.']
+    },
+    {
+      cluster:'Consumer',
+      item:'AI Savviness & AI Leadership',
+      highlights:['Create an AI training concept at the Shape level.','Form an AI Guild of champions.','Align business use cases to POCs and evaluate scalability.']
+    },
+    {
+      cluster:'DPS',
+      item:'AI Savviness & AI Leadership, Leadership Pipeline & Succession',
+      highlights:['Shift from general AI literacy to practical skills with courses on AIOps or Predictive Analytics.','Establish an AI Idea Funnel and PoC Charter.','Identify high-potential team members for leadership training.']
+    },
+    {
+      cluster:'Enterprise',
+      item:'AI Savviness & AI Leadership',
+      highlights:['Establish an AI roadmap with priority use cases.','Enhance expertise in AI and SAP Joule through hands-on learning and POCs.','Invest in AI-related training and create a platform for sharing experiences.']
+    },
+    {
+      cluster:'Industry',
+      item:'AI Savviness & AI Leadership, Improve Cost Stewardship',
+      highlights:['Establish an "AI Idea Funnel" and form a virtual AI Center of Excellence (vCoE).','Introduce a "TCO-Lite" (Total Cost of Ownership) analysis for new projects.']
+    }
+  ];
+
+  const aiSavvinessRows = [
+    {
+      role:'Business Analyst (BA) & Product Owner (PO)',
+      levels:[
+        { label:'L1: AI Awareness (Basic)', questions:['1. Can you explain the difference between public LLMs and BSH-approved tools?','2. Can you identify 3 daily tasks to accelerate with AI?'], modules:['What is AI? - Artificial Intelligence - BSH Intranet'] },
+        { label:'L2: AI Prototyper (Application)', questions:['1. Can you use structured prompting to draft user stories or backlog items?','2. Do you know which data classifications are safe to input?'], modules:['Prompt Engineering: How to talk to AI','DEXA: AI Foundation Level Learning Path V2 - SAP SuccessFactors'] },
+        { label:'L3: AI Champion (Advanced)', questions:['1. Can you run a "Use-Case Discovery Workshop" for business teams?','2. Can you design multi-step prompts to automate analysis?'], modules:['Advanced Prompt Engineering'] },
+        { label:'L4: AI Expert (Specialist)', questions:['1. Can you write a functional specification for a custom RAG or agent tool?','2. Can you set up validation metrics?'], modules:['Artificial Intelligence and Business Strategy Online Class | LinkedIn Learning','AI Trainings: Decisions Path'] }
+      ]
+    },
+    {
+      role:'Software Developer & Architect',
+      levels:[
+        { label:'L1: AI Awareness (Basic)', questions:['1. Do you understand token sizes, context windows, and parameters?','2. Do you know BSH code licensing rules for AI code?'], modules:['What is AI? - Artificial Intelligence - BSH Intranet','DEXA: AI Foundation Level Learning Path V2 - SAP SuccessFactors'] },
+        { label:'L2: AI Prototyper (Application)', questions:['1. Can you use IDE coding copilots to refactor or write unit tests?','2. Do you know how to set model temperature?'], modules:['Prompt Engineering: How to talk to AI'] },
+        { label:'L3: AI Champion (Advanced)', questions:['1. Have you built working POCs by calling LLM APIs directly?','2. Can you build prompt-chaining workflows?'], modules:['Advanced Prompt Engineering','Building robust and responsible solutions'] },
+        { label:'L4: AI Expert (Specialist)', questions:['1. Can you build and maintain a production-ready RAG system?','2. Can you design enterprise AI patterns with rate limits?'], modules:['Building robust and responsible solutions','AI Trainings: Tech Lead Track'] }
+      ]
+    },
+    {
+      role:'QA Engineer & Tester',
+      levels:[
+        { label:'L1: AI Awareness (Basic)', questions:['1. Do you understand why LLMs hallucinate or return inconsistent outputs?','2. Do you know where system logs can be securely analyzed?'], modules:['What is AI? - Artificial Intelligence - BSH Intranet','DEXA: AI Foundation Level Learning Path V2 - SAP SuccessFactors'] },
+        { label:'L2: AI Prototyper (Application)', questions:['1. Do you use BSH AI to generate positive and negative test cases?','2. Can you use AI to quickly create mock datasets?'], modules:['Prompt Engineering: How to talk to AI'] },
+        { label:'L3: AI Champion (Advanced)', questions:['1. Can you prompt AI to write test automation scripts?','2. Can you design a workflow to parse bug reports?'], modules:['Advanced Prompt Engineering'] },
+        { label:'L4: AI Expert (Specialist)', questions:['1. Have you integrated automated LLM validation tools into CI/CD pipelines?','2. Can you build test-generation pipelines?'], modules:['AI Learning Paths: Advanced Track','Building robust and responsible solutions'] }
+      ]
+    },
+    {
+      role:'Tools',
+      levels:[
+        { label:'L1: AI Awareness (Basic)', questions:[''], modules:['BSH GenAI tools at a glance - Artificial Intelligence - BSH Intranet'] },
+        { label:'L2: AI Prototyper (Application)', questions:[''], modules:['Microsoft Copilot Training Series - Data & Analytics - BSH Intranet'] },
+        { label:'L3: AI Champion (Advanced)', questions:[''], modules:['Level up your AI - Mastering key features in BSH AI - SAP SuccessFactors'] },
+        { label:'L4: AI Expert (Specialist)', questions:[''], modules:[''] }
+      ]
+    },
+    {
+      role:'AI Register',
+      levels:[
+        { label:'L1: AI Awareness (Basic)', questions:[''], modules:['BSH AI Register - Artificial Intelligence - BSH Intranet'] },
+        { label:'L2: AI Prototyper (Application)', questions:[''], modules:[''] },
+        { label:'L3: AI Champion (Advanced)', questions:[''], modules:[''] },
+        { label:'L4: AI Expert (Specialist)', questions:[''], modules:[''] }
+      ]
+    },
+    {
+      role:'AI readiness test',
+      levels:[
+        { label:'L1: AI Awareness (Basic)', questions:[''], modules:['DBAReadiness Test - Power Apps'] },
+        { label:'L2: AI Prototyper (Application)', questions:[''], modules:[''] },
+        { label:'L3: AI Champion (Advanced)', questions:[''], modules:[''] },
+        { label:'L4: AI Expert (Specialist)', questions:[''], modules:[''] }
+      ]
+    }
+  ];
+
+  const html = `
+    <div class="action-shell">
+      <button class="back-btn" onclick="showHome()">← Back to Dashboard</button>
+      <div class="hero" style="background:linear-gradient(135deg,#1d4ed8,#0f172a)">
+        <div class="hero-in">
+          <div class="hero-num">3</div>
+          <div class="hero-div"></div>
+          <div class="hero-meta">
+            <div class="hero-badge">🎯 Priority Action Areas</div>
+            <div class="hero-stats">
+              <div><div class="hs-k">Focus</div><div class="hs-v">AI + Leadership</div></div>
+              <div><div class="hs-k">Portfolio</div><div class="hs-v">5 Clusters</div></div>
+              <div><div class="hs-k">Priority</div><div class="hs-v">Top 3</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="focus-grid">
+        ${topAreas.map(area => `
+          <div class="focus-card">
+            <div class="mini-label">Selected Area</div>
+            <h3>${area.name}</h3>
+            <div class="focus-count">${area.count} cluster${area.count > 1 ? 's' : ''}</div>
+            <p>${area.detail}</p>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="summary-card">
+        <h3 style="font-size:14px; margin-bottom:14px;">Focus areas across all clusters and shapes</h3>
+        <div class="focus-chart-wrap">
+          <div class="focus-chart">
+            ${focusData.map((item, index) => {
+              const width = (item.value / maxFocus) * 100;
+              const isPrimary = index === 0;
+              return `
+                <div class="focus-row">
+                  <div class="focus-label">${item.label}</div>
+                  <div class="focus-track">
+                    <div class="focus-bar ${isPrimary ? 'is-primary' : ''}" style="width:${width}%;"></div>
+                    <div class="focus-value">${item.value}</div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      </div>
+
+      <div class="action-summary-grid">
+        <div class="summary-card keyfindings">
+          <h3>Key Findings</h3>
+          <div>
+            <h4>1. AI Capability is the #1 Strategic Priority</h4>
+            <ul>
+              <li><strong>AI Savviness &amp; AI Leadership</strong> accounts for <strong>45% of all action plans (13 of 29 actions)</strong>.</li>
+              <li>Every cluster has identified AI capability development as a critical improvement area.</li>
+              <li>Current focus is on:
+                <ul>
+                  <li>Building AI awareness and competency</li>
+                  <li>Creating AI champions</li>
+                  <li>Driving practical use-case implementation</li>
+                  <li>Increasing business adoption</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4>2. High Focus on Priority 1 Actions</h4>
+            <ul>
+              <li>Majority of initiatives are classified as <strong>Priority 1</strong>, indicating a strong urgency to address capability and governance gaps.</li>
+              <li>Most clusters are focused on foundational capability building rather than optimization.</li>
+            </ul>
+          </div>
+          <div>
+            <h4>3. Leadership &amp; Ownership Gaps Exist</h4>
+            <ul>
+              <li>Several clusters identified: <ul>
+                <li>Limited succession readiness</li>
+                <li>Insufficient leadership pipeline</li>
+                <li>Unclear decision-making ownership</li>
+                <li>Dependence on global teams for approvals</li>
+              </ul></li>
+            </ul>
+          </div>
+          <div>
+            <h4>4. Innovation Needs Better Scaling</h4>
+            <ul>
+              <li>While multiple clusters are running innovation and digital initiatives, there is no common:
+                <ul>
+                  <li>Use-case funnel</li>
+                  <li>Governance model</li>
+                  <li>Value realization framework</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4>5. Execution Governance Requires Improvement</h4>
+            <ul>
+              <li>Current action plans show:
+                <ul>
+                  <li><strong>11 actions without an assigned owner</strong></li>
+                  <li><strong>10 actions without due dates</strong></li>
+                  <li><strong>10 actions without progress status</strong></li>
+                </ul>
+              </li>
+              <li>This creates visibility and execution risks.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <h3>Hub-Level Strategic Priorities (FY26–FY27)</h3>
+          <table class="priority-table">
+            <thead>
+              <tr>
+                <th>Priority</th>
+                <th>Hub Action</th>
+                <th>Business Impact</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="priority-pill">P1</span></td><td>Build Hub-wide AI Capability Program</td><td>Accelerate productivity and innovation</td></tr>
+              <tr><td><span class="priority-pill">P1</span></td><td>Establish AI Use Case Funnel &amp; Governance</td><td>Improve conversion from ideas to implementation</td></tr>
+              <tr><td><span class="priority-pill">P1</span></td><td>Strengthen Global Ownership &amp; Decision Rights</td><td>Faster decisions and increased accountability</td></tr>
+              <tr><td><span class="priority-pill">P1</span></td><td>Leadership &amp; Succession Planning</td><td>Ensure continuity and future readiness</td></tr>
+              <tr><td><span class="priority-pill alt">P1</span></td><td>Portfolio Governance &amp; Tracking</td><td>Improve execution discipline</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card action-card">
+        <div class="card-h">Cluster Action Plan Summary</div>
+        <table class="action-table">
+          <thead>
+            <tr>
+              <th>Cluster</th>
+              <th>Most Common Action Item</th>
+              <th>Action Plan Highlights</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${clusterPlanRows.map(row => `
+              <tr>
+                <td><strong>${row.cluster}</strong></td>
+                <td>${row.item}</td>
+                <td>
+                  <ul class="bullet-list">
+                    ${row.highlights.map(item => `<li>${item}</li>`).join('')}
+                  </ul>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card action-card">
+        <div class="card-h">AI Capability Maturity Matrix</div>
+        <div style="overflow-x:auto;">
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th style="width:18%">Role Persona</th>
+                <th style="width:20%">L1: AI Awareness</th>
+                <th style="width:20%">L2: AI Prototyper</th>
+                <th style="width:20%">L3: AI Champion</th>
+                <th style="width:22%">L4: AI Expert</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${aiSavvinessRows.map(row => `
+                <tr>
+                  <td class="matrix-role-cell"><strong>${row.role}</strong></td>
+                  ${row.levels.map(level => `
+                    <td>
+                      <span class="matrix-tag">${level.label}</span>
+                      <div class="matrix-questions">
+                        ${level.questions.filter(Boolean).length ? level.questions.filter(Boolean).map(question => `<p>${question}</p>`).join('') : '<p>• No explicit self-assessment defined yet.</p>'}
+                      </div>
+                      <div class="matrix-module-list">
+                        ${level.modules.filter(Boolean).length ? level.modules.filter(Boolean).map(module => `<span class="module-chip">${moduleLink(module)}</span>`).join('') : '<span class="module-chip">No current module assigned</span>'}
+                      </div>
+                    </td>
+                  `).join('')}
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+
+  go('v-action-items', html);
 }
 
 function showHub() {
