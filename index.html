@@ -733,147 +733,41 @@ function showHome() {
 function showActionItems() {
   setTabState('Action Items');
   setBC('<button class="bc-link" onclick="showHome()">Hub Overview</button><span class="bc-sep">›</span><span class="bc-cur">Action Items</span>');
-  const topAreas = [
-    {name:'AI Savviness & AI Leadership', count:5, detail:'Most frequently cited challenge across the portfolio. It is the dominant capability gap to accelerate adoption, experimentation, and team readiness.'},
-    {name:'Leadership Pipeline & Succession', count:1, detail:'Important for building scalable leadership capacity and preparing the next generation of decision-makers.'},
-    {name:'Improve Cost Stewardship', count:1, detail:'A strategic enabler to ensure AI and digital investments remain financially disciplined and scalable.'}
-  ];
-
-  const focusData = [
-    {label:'AI Savviness & AI Leadership', value:13},
-    {label:'End-to-End Global Ownership', value:7},
-    {label:'Leadership Pipeline & Succession', value:6},
-    {label:'Cost Stewardship', value:5},
-    {label:'Scalable Innovation', value:4},
-    {label:'Build a Succession Plan for Key Team Members', value:3},
-    {label:'Technical & Functional Depth', value:3},
-    {label:'JRA Intensity & Future Digital', value:2},
-    {label:'Improve Cost Stewardship', value:2}
-  ];
-  const maxFocus = Math.max(...focusData.map(item => item.value));
-
-  const clusterPlanRows = [
+  const focusAreas = [
     {
-      cluster:'Appliance',
-      item:'AI Savviness & AI Leadership',
-      highlights:['Provide AI training for the team.','Encourage development of AI-related features and Proof of Concepts (POCs).','Nominate team members for official BSH AI Trainings.']
+      name:'AI Savviness & AI Leadership', count:14, priority:'High Focus',
+      metrics:['Quantitative: Achieve ≥90% team completion of foundational AI training.','Quantitative: Submit ≥10 new ideas to the AI Use Case Funnel, with ≥75% including a clear business case.','Qualitative: Team members can articulate 2–3 ways AI optimizes daily workflows.']
     },
     {
-      cluster:'Consumer',
-      item:'AI Savviness & AI Leadership',
-      highlights:['Create an AI training concept at the Shape level.','Form an AI Guild of champions.','Align business use cases to POCs and evaluate scalability.']
+      name:'End-to-End Global Ownership', count:5, priority:'High Focus',
+      metrics:['Quantitative: Independently execute >25% of module decisions locally without HQ approval.','Quantitative: Track Skills Density and the share of work accomplished in India versus globally.']
     },
     {
-      cluster:'DPS',
-      item:'AI Savviness & AI Leadership, Leadership Pipeline & Succession',
-      highlights:['Shift from general AI literacy to practical skills with courses on AIOps or Predictive Analytics.','Establish an AI Idea Funnel and PoC Charter.','Identify high-potential team members for leadership training.']
+      name:'Leadership Pipeline & Succession', count:4, priority:'Medium Focus',
+      metrics:['Quantitative: Track succession coverage and readiness for critical roles, including identified successors and development plans.','Quantitative: Fill at least two strategic or niche roles within 18 months through internal upskilling.']
     },
     {
-      cluster:'Enterprise',
-      item:'AI Savviness & AI Leadership',
-      highlights:['Establish an AI roadmap with priority use cases.','Enhance expertise in AI and SAP Joule through hands-on learning and POCs.','Invest in AI-related training and create a platform for sharing experiences.']
+      name:'Scalable Innovation', count:3, priority:'Medium Focus',
+      metrics:['Quantitative: Increase the POC-to-production conversion rate to >15% within 12 months.','Qualitative: Track ideas proposed and successfully transitioned through the pipeline funnel.']
     },
     {
-      cluster:'Industry',
-      item:'AI Savviness & AI Leadership, Improve Cost Stewardship',
-      highlights:['Establish an "AI Idea Funnel" and form a virtual AI Center of Excellence (vCoE).','Introduce a "TCO-Lite" (Total Cost of Ownership) analysis for new projects.']
+      name:'Technical & Functional Depth', count:3, priority:'Medium Focus',
+      metrics:['Quantitative: Track training completion for niche platforms including SAP BTP, Fiori, CPQ, CPI, and Celonis.','Quantitative: Track active projects and POCs deployed using newly acquired skills.']
+    },
+    {
+      name:'Cost Stewardship', count:3, priority:'Medium Focus',
+      metrics:['Quantitative: Include a standardized TCO-Lite analysis in at least 50% of project proposals.','Qualitative: Prioritize total cost of ownership and business value over basic budget tracking in project reviews.']
     }
   ];
 
-  const clusterBreakdownParams = [
-    'AI Savviness & AI Leadership',
-    'Build a Succession Plan for Key Team Members',
-    'Cost Stewardship',
-    'End-to-End Global Ownership',
-    'Improve Cost Stewardship',
-    'JRA Intensity & Future Digital',
-    'Leadership Pipeline & Succession',
-    'Scalable Innovation',
-    'Technical & Functional Depth'
+  const clusterMetrics = [
+    {cluster:'Appliance', shapes:4, actions:7, focus:['AI Savviness & AI Leadership','Leadership Pipeline & Succession'], metrics:['AI KPI: Reach 90% team completion of foundational AI training.','Leadership KPI: Successfully fill at least two strategic/niche roles within 18 months via internal upskilling.']},
+    {cluster:'Consumer', shapes:4, actions:7, focus:['AI Savviness & AI Leadership','End-to-End Global Ownership'], metrics:['AI KPI: Reach 90% team completion of AI training.','Ownership KPI: Enable the local team to make >25% of pilot-module decisions without external approval.']},
+    {cluster:'DNA', shapes:3, actions:4, focus:['End-to-End Global Ownership','Technical & Functional Depth'], metrics:['Ownership KPI: Track Skills Density versus global peers and the local/global split of PO and PO/PO roles.','Technical KPI: Track training completion and the number of POCs developed on new target-data pipelines.']},
+    {cluster:'DPS', shapes:3, actions:6, focus:['AI Savviness & AI Leadership','Leadership Pipeline & Succession'], metrics:['AI KPI: Submit at least five AI ideas to the funnel and initiate or review at least one AI POC within 12 months.','Succession KPI: Identify at least one successor for critical SAP/technical roles with a documented IDP.']},
+    {cluster:'Enterprise', shapes:5, actions:9, focus:['AI Savviness & AI Leadership','Technical & Functional Depth'], metrics:['AI KPI: Identify and develop use cases for measurable productivity/effort savings via SAP Joule.','Technical KPI: Track projects using newly acquired SAP BTP, Fiori, CPQ, and CPI skills.']},
+    {cluster:'Industry', shapes:1, actions:2, focus:['AI Savviness & AI Leadership','Cost Stewardship'], metrics:['AI KPI: Submit at least 10 new ideas to the AI Idea Funnel.','Cost KPI: Include TCO-Lite analysis in at least 50% of new projects.']}
   ];
-
-  const clusterBreakdownColors = {
-    'AI Savviness & AI Leadership': '#0e7490',
-    'Build a Succession Plan for Key Team Members': '#f97316',
-    'Cost Stewardship': '#16a34a',
-    'End-to-End Global Ownership': '#2563eb',
-    'Improve Cost Stewardship': '#a21caf',
-    'JRA Intensity & Future Digital': '#4d7c0f',
-    'Leadership Pipeline & Succession': '#0f766e',
-    'Scalable Innovation': '#d97706',
-    'Technical & Functional Depth': '#7c3aed'
-  };
-
-  const clusterBreakdownData = [
-    {cluster:'Appliance', values:[3.0, 1.0, 0.6, 2.1, 0.8, 0.4, 1.2, 0.7, 0.9]},
-    {cluster:'Consumer', values:[2.9, 0.8, 0.7, 1.8, 0.9, 0.5, 1.0, 0.8, 0.7]},
-    {cluster:'DPS', values:[2.7, 0.9, 0.7, 1.5, 0.8, 0.6, 1.1, 0.9, 0.8]},
-    {cluster:'Enterprise', values:[2.8, 1.4, 0.8, 1.7, 1.0, 0.7, 1.6, 0.9, 1.0]},
-    {cluster:'Industry', values:[3.1, 1.0, 0.9, 1.9, 1.1, 0.6, 1.5, 0.8, 0.9]}
-  ];
-
-  const clusterBreakdownChart = (() => {
-    const maxValue = 3.5;
-    const chartLeft = 36;
-    const chartTop = 18;
-    const chartWidth = 610;
-    const chartHeight = 175;
-    const groupWidth = 110;
-    const barWidth = 10;
-    const barGap = 3;
-    const grid = Array.from({length: 8}, (_, i) => {
-      const y = chartTop + (chartHeight - (i / 7) * chartHeight);
-      const label = (maxValue * (7 - i) / 7).toFixed(1);
-      return `
-        <line x1="${chartLeft}" y1="${y}" x2="${chartLeft + chartWidth}" y2="${y}" stroke="#dfe7f1" stroke-width="1" />
-        <text x="${chartLeft - 10}" y="${y + 4}" font-size="10" fill="#64748b" text-anchor="end">${label}</text>
-      `;
-    }).join('');
-
-    const bars = clusterBreakdownData.flatMap((cluster, ci) => {
-      const xBase = chartLeft + ci * groupWidth + 14;
-      return cluster.values.map((value, vi) => {
-        const param = clusterBreakdownParams[vi];
-        const x = xBase + vi * (barWidth + barGap);
-        const barHeight = (value / maxValue) * (chartHeight - 10);
-        const y = chartTop + chartHeight - barHeight;
-        return `
-          <rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" fill="${clusterBreakdownColors[param]}" rx="2" />
-        `;
-      });
-    }).join('');
-
-    const axis = clusterBreakdownData.map((cluster, ci) => {
-      const x = chartLeft + ci * groupWidth + 28;
-      return `
-        <text x="${x}" y="${chartTop + chartHeight + 22}" font-size="11" fill="#334155" text-anchor="middle">${cluster.cluster}</text>
-      `;
-    }).join('');
-
-    return `
-      <div class="breakdown-card">
-        <div class="breakdown-shell">
-          <div class="breakdown-svg-wrap">
-            <svg class="breakdown-svg" viewBox="0 0 700 225" role="img" aria-label="Cluster-wise breakdown on action parameters">
-              <rect x="0" y="0" width="700" height="225" fill="#fff" />
-              ${grid}
-              <line x1="${chartLeft}" y1="${chartTop + chartHeight}" x2="${chartLeft + chartWidth}" y2="${chartTop + chartHeight}" stroke="#94a3b8" stroke-width="1" />
-              ${bars}
-              ${axis}
-            </svg>
-          </div>
-          <div class="breakdown-legend">
-            ${clusterBreakdownParams.map(param => `
-              <div class="legend-item">
-                <span class="legend-swatch" style="background:${clusterBreakdownColors[param]}"></span>
-                <span>${param}</span>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      </div>
-    `;
-  })();
 
   const aiSavvinessRows = [
     {
@@ -937,52 +831,39 @@ function showActionItems() {
       <button class="back-btn" onclick="showHome()">← Back to Dashboard</button>
       <div class="hero" style="background:linear-gradient(135deg,#1d4ed8,#0f172a)">
         <div class="hero-in">
-          <div class="hero-num">3</div>
+          <div class="hero-num">35</div>
           <div class="hero-div"></div>
           <div class="hero-meta">
-            <div class="hero-badge">🎯 Priority Action Areas</div>
+            <div class="hero-badge">🎯 Active Action Items</div>
             <div class="hero-stats">
-              <div><div class="hs-k">Focus</div><div class="hs-v">AI + Leadership</div></div>
-              <div><div class="hs-k">Portfolio</div><div class="hs-v">5 Clusters</div></div>
-              <div><div class="hs-k">Priority</div><div class="hs-v">Top 3</div></div>
+              <div><div class="hs-k">Active Clusters</div><div class="hs-v">6</div></div>
+              <div><div class="hs-k">Focus Areas</div><div class="hs-v">6</div></div>
+              <div><div class="hs-k">Highest Focus</div><div class="hs-v">AI Leadership</div></div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="focus-grid">
-        ${topAreas.map(area => `
-          <div class="focus-card">
-            <div class="mini-label">Selected Area</div>
-            <h3>${area.name}</h3>
-            <div class="focus-count">${area.count} cluster${area.count > 1 ? 's' : ''}</div>
-            <p>${area.detail}</p>
-          </div>
-        `).join('')}
-      </div>
-
       <div class="summary-card">
-        <h3 style="font-size:14px; margin-bottom:14px;">Focus areas across all clusters and shapes</h3>
-        <div class="focus-chart-wrap">
-          <div class="focus-chart">
-            ${focusData.map((item, index) => {
-              const width = (item.value / maxFocus) * 100;
-              const isPrimary = index === 0;
-              return `
-                <div class="focus-row">
-                  <div class="focus-label">${item.label}</div>
-                  <div class="focus-track">
-                    <div class="focus-bar ${isPrimary ? 'is-primary' : ''}" style="width:${width}%;"></div>
-                    <div class="focus-value">${item.value}</div>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
+        <h3 style="font-size:14px; margin-bottom:14px;">Top Action Items &amp; Focus Areas (Hub-Level with Integrated KPIs)</h3>
+        <div style="overflow-x:auto;">
+          <table class="priority-table">
+            <thead>
+              <tr><th>Focus Area (Parameter)</th><th>Action Item Count</th><th>Strategic Priority</th><th>Measuring Success (Quantitative KPIs &amp; Qualitative Metrics)</th></tr>
+            </thead>
+            <tbody>
+              ${focusAreas.map(area => `
+                <tr>
+                  <td><strong>${area.name}</strong></td>
+                  <td>${area.count}</td>
+                  <td><span class="priority-pill ${area.priority === 'High Focus' ? '' : 'alt'}">${area.priority}</span></td>
+                  <td><ul class="bullet-list">${area.metrics.map(metric => `<li>${metric}</li>`).join('')}</ul></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
         </div>
       </div>
-
-      ${clusterBreakdownChart}
 
       <div class="action-summary-grid">
         <div class="summary-card keyfindings">
@@ -990,7 +871,7 @@ function showActionItems() {
           <div>
             <h4>1. AI Capability is the #1 Strategic Priority</h4>
             <ul>
-              <li><strong>AI Savviness &amp; AI Leadership</strong> accounts for <strong>45% of all action plans (13 of 29 actions)</strong>.</li>
+              <li><strong>AI Savviness &amp; AI Leadership</strong> accounts for <strong>40% of active action items (14 of 35)</strong>.</li>
               <li>Every cluster has identified AI capability development as a critical improvement area.</li>
               <li>Current focus is on:
                 <ul>
@@ -1069,25 +950,25 @@ function showActionItems() {
       </div>
 
       <div class="card action-card">
-        <div class="card-h">Cluster Action Plan Summary</div>
+        <div class="card-h">Cluster &amp; Shape Level Metrics Roll-Up (with Focus Areas &amp; KPIs)</div>
         <table class="action-table">
           <thead>
             <tr>
               <th>Cluster</th>
-              <th>Most Common Action Item</th>
-              <th>Action Plan Highlights</th>
+              <th>Active Shapes</th>
+              <th>Total Actions</th>
+              <th>Top 2 Focus Areas</th>
+              <th>Representative Operational KPIs / Success Metrics</th>
             </tr>
           </thead>
           <tbody>
-            ${clusterPlanRows.map(row => `
+            ${clusterMetrics.map(row => `
               <tr>
                 <td><strong>${row.cluster}</strong></td>
-                <td>${row.item}</td>
-                <td>
-                  <ul class="bullet-list">
-                    ${row.highlights.map(item => `<li>${item}</li>`).join('')}
-                  </ul>
-                </td>
+                <td>${row.shapes}</td>
+                <td>${row.actions}</td>
+                <td><ol class="bullet-list">${row.focus.map(item => `<li>${item}</li>`).join('')}</ol></td>
+                <td><ul class="bullet-list">${row.metrics.map(metric => `<li>${metric}</li>`).join('')}</ul></td>
               </tr>
             `).join('')}
           </tbody>
